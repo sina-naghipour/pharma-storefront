@@ -1,0 +1,1404 @@
+================================================================================
+REACT APPLICATION BUNDLE
+================================================================================
+Project: pharma-storefront
+Generated: 2026-05-02 23:37:42
+Directory: D:\codes\pharma\pharma-storefront
+================================================================================
+
+📁 PROJECT STRUCTURE
+--------------------------------------------------------------------------------
+    📄 src\App.js
+
+================================================================================
+FILE: src\App.js
+SIZE: 2,175 bytes
+MODIFIED: 2025-08-14 18:04:55.617883
+================================================================================
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './hooks/useAuth';
+import { CartProvider } from './hooks/useCart';
+import Home from './pages/Home';
+import Products from './pages/Products';
+import ProductDetail from './pages/ProductDetail';
+import Cart from './pages/Cart';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
+import './App.css';
+
+function App() {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <div className="App min-h-screen flex flex-col" dir="rtl">
+            <Header />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/products/:slug" element={<ProductDetail />} />
+                <Route path="/category/:slug" element={<Products />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route 
+                  path="/cart" 
+                  element={
+                    <ProtectedRoute>
+                      <Cart />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/orders" 
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  } 
+                />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;
+    📄 src\App.test.js
+
+================================================================================
+FILE: src\App.test.js
+SIZE: 246 bytes
+MODIFIED: 2025-08-14 18:01:43.366004
+================================================================================
+
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+      📄 src\api\AuthService.js
+
+================================================================================
+FILE: src\api\AuthService.js
+SIZE: 2,951 bytes
+MODIFIED: 2025-08-14 18:03:34.122243
+================================================================================
+
+import apiClient from '../api/client';
+import { ENDPOINTS } from '../api/endpoints';
+
+class AuthService {
+  // Login user
+  async login(credentials) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.AUTH.LOGIN, credentials);
+      const { access, refresh, user } = response.data;
+      
+      // Store tokens
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Logout user
+  async logout() {
+    try {
+      await apiClient.post(ENDPOINTS.AUTH.LOGOUT);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+    }
+  }
+
+  // Register user
+  async register(userData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ACCOUNTS.USERS, userData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get current user
+  async getCurrentUser() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ACCOUNTS.USER_ME);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Change password
+  async changePassword(passwordData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ACCOUNTS.CHANGE_PASSWORD, passwordData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Password reset
+  async passwordReset(email) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ACCOUNTS.PASSWORD_RESET, { email });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Password reset confirm
+  async passwordResetConfirm(resetData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ACCOUNTS.PASSWORD_RESET_CONFIRM, resetData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Check if user is authenticated
+  isAuthenticated() {
+    return !!localStorage.getItem('access_token');
+  }
+
+  // Get stored user
+  getUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
+
+  // Handle API errors
+  handleError(error) {
+    if (error.response) {
+      return {
+        message: error.response.data.message || 'خطایی رخ داده است',
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+    return {
+      message: 'خطا در اتصال به سرور',
+      status: 0,
+    };
+  }
+}
+
+export default new AuthService();
+      📄 src\api\CartService.js
+
+================================================================================
+FILE: src\api\CartService.js
+SIZE: 2,845 bytes
+MODIFIED: 2025-08-14 18:03:54.690984
+================================================================================
+
+import apiClient from '../api/client';
+import { ENDPOINTS } from '../api/endpoints';
+
+class CartService {
+  // Get current cart
+  async getCurrentCart() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ORDERS.CART_CURRENT);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Add item to cart
+  async addItem(itemData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_ADD_ITEM, itemData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Update cart item
+  async updateItem(itemData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_UPDATE_ITEM, itemData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Remove item from cart
+  async removeItem(itemData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_REMOVE_ITEM, itemData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Clear cart
+  async clearCart() {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_CLEAR);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Apply coupon
+  async applyCoupon(couponData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_APPLY_COUPON, couponData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Set addresses
+  async setAddresses(addressData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_SET_ADDRESSES, addressData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Upload prescription
+  async uploadPrescription(prescriptionData) {
+    try {
+      const formData = new FormData();
+      Object.keys(prescriptionData).forEach(key => {
+        formData.append(key, prescriptionData[key]);
+      });
+
+      const response = await apiClient.post(ENDPOINTS.ORDERS.CART_UPLOAD_PRESCRIPTION, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Handle API errors
+  handleError(error) {
+    if (error.response) {
+      return {
+        message: error.response.data.message || 'خطایی رخ داده است',
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+    return {
+      message: 'خطا در اتصال به سرور',
+      status: 0,
+    };
+  }
+}
+
+export default new CartService();
+      📄 src\api\OrderService.js
+
+================================================================================
+FILE: src\api\OrderService.js
+SIZE: 2,635 bytes
+MODIFIED: 2025-08-14 18:04:06.814694
+================================================================================
+
+import apiClient from '../api/client';
+import { ENDPOINTS } from '../api/endpoints';
+
+class OrderService {
+  // Get all orders
+  async getOrders(params = {}) {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ORDERS.ORDERS, { params });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get single order
+  async getOrder(id) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.ORDERS.ORDERS}${id}/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Create order
+  async createOrder(orderData) {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ORDERS.ORDERS, orderData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Cancel order
+  async cancelOrder(id, cancelData = {}) {
+    try {
+      const response = await apiClient.post(`${ENDPOINTS.ORDERS.ORDERS}${id}/cancel/`, cancelData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get order payments
+  async getOrderPayments(id) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.ORDERS.ORDERS}${id}/payments/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get order refunds
+  async getOrderRefunds(id) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.ORDERS.ORDERS}${id}/refunds/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get order shipments
+  async getOrderShipments(id) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.ORDERS.ORDERS}${id}/shipments/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Track order
+  async trackOrder(trackingNumber) {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ORDERS.ORDERS, {
+        params: { tracking_number: trackingNumber }
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Handle API errors
+  handleError(error) {
+    if (error.response) {
+      return {
+        message: error.response.data.message || 'خطایی رخ داده است',
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+    return {
+      message: 'خطا در اتصال به سرور',
+      status: 0,
+    };
+  }
+}
+
+export default new OrderService();
+      📄 src\api\ProductService.js
+
+================================================================================
+FILE: src\api\ProductService.js
+SIZE: 4,646 bytes
+MODIFIED: 2025-08-14 18:03:44.248353
+================================================================================
+
+import apiClient from '../api/client';
+import { ENDPOINTS } from '../api/endpoints';
+
+class ProductService {
+  // Get all products with filters
+  async getProducts(params = {}) {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.PRODUCTS, { params });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get single product
+  async getProduct(slug) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.PRODUCTS.PRODUCTS}${slug}/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get featured products
+  async getFeaturedProducts() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.FEATURED);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get products on sale
+  async getOnSaleProducts() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.ON_SALE);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get product categories
+  async getCategories() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.CATEGORIES);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get root categories
+  async getRootCategories() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.ROOT_CATEGORIES);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get category products
+  async getCategoryProducts(slug, params = {}) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.PRODUCTS.CATEGORIES}${slug}/products/`, { params });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get manufacturers
+  async getManufacturers() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.MANUFACTURERS);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get manufacturer products
+  async getManufacturerProducts(slug, params = {}) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.PRODUCTS.MANUFACTURERS}${slug}/products/`, { params });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get product reviews
+  async getProductReviews(slug, params = {}) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.PRODUCTS.PRODUCTS}${slug}/reviews/`, { params });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Add product review
+  async addProductReview(slug, reviewData) {
+    try {
+      const response = await apiClient.post(`${ENDPOINTS.PRODUCTS.PRODUCTS}${slug}/add_review/`, reviewData);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get similar products
+  async getSimilarProducts(slug) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.PRODUCTS.PRODUCTS}${slug}/similar/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get product variants
+  async getProductVariants(slug) {
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.PRODUCTS.PRODUCTS}${slug}/variants/`);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Get expiring batches
+  async getExpiringBatches() {
+    try {
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.EXPIRING_SOON);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Search products
+  async searchProducts(query, params = {}) {
+    try {
+      const searchParams = { search: query, ...params };
+      const response = await apiClient.get(ENDPOINTS.PRODUCTS.PRODUCTS, { params: searchParams });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Handle API errors
+  handleError(error) {
+    if (error.response) {
+      return {
+        message: error.response.data.message || 'خطایی رخ داده است',
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+    return {
+      message: 'خطا در اتصال به سرور',
+      status: 0,
+    };
+  }
+}
+
+export default new ProductService();
+      📄 src\api\client.js
+
+================================================================================
+FILE: src\api\client.js
+SIZE: 1,850 bytes
+MODIFIED: 2025-08-14 18:03:03.178789
+================================================================================
+
+import axios from 'axios';
+
+// Base API configuration
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+
+// Create axios instance
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
+});
+
+// Request interceptor to add auth token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for token refresh
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (refreshToken) {
+          const response = await axios.post(`${API_BASE_URL}/accounts/auth/refresh/`, {
+            refresh: refreshToken,
+          });
+
+          const { access } = response.data;
+          localStorage.setItem('access_token', access);
+          
+          // Retry original request
+          originalRequest.headers.Authorization = `Bearer ${access}`;
+          return apiClient(originalRequest);
+        }
+      } catch (refreshError) {
+        // Refresh failed, redirect to login
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;
+      📄 src\api\endpoints.js
+
+================================================================================
+FILE: src\api\endpoints.js
+SIZE: 3,400 bytes
+MODIFIED: 2025-08-14 18:03:13.125599
+================================================================================
+
+// API endpoints configuration
+export const ENDPOINTS = {
+  // Authentication
+  AUTH: {
+    LOGIN: '/accounts/auth/login/',
+    LOGOUT: '/accounts/auth/logout/',
+    REFRESH: '/accounts/auth/refresh/',
+  },
+
+  // Accounts
+  ACCOUNTS: {
+    USERS: '/accounts/users/',
+    USER_ME: '/accounts/users/me/',
+    CHANGE_PASSWORD: '/accounts/users/change_password/',
+    PASSWORD_RESET: '/accounts/users/password_reset/',
+    PASSWORD_RESET_CONFIRM: '/accounts/users/password_reset_confirm/',
+    PROFILES: '/accounts/profiles/',
+    MY_PROFILE: '/accounts/profiles/my_profile/',
+    ADDRESSES: '/accounts/addresses/',
+    DEFAULT_BILLING: '/accounts/addresses/default_billing/',
+    DEFAULT_SHIPPING: '/accounts/addresses/default_shipping/',
+    LICENSES: '/accounts/licenses/',
+  },
+
+  // Products
+  PRODUCTS: {
+    PRODUCTS: '/products/products/',
+    FEATURED: '/products/products/featured/',
+    ON_SALE: '/products/products/on_sale/',
+    CATEGORIES: '/products/categories/',
+    ROOT_CATEGORIES: '/products/categories/root/',
+    MANUFACTURERS: '/products/manufacturers/',
+    IMAGES: '/products/images/',
+    REVIEWS: '/products/reviews/',
+    MY_REVIEWS: '/products/reviews/my_reviews/',
+    BATCHES: '/products/batches/',
+    EXPIRING_SOON: '/products/batches/expiring_soon/',
+  },
+
+  // Orders
+  ORDERS: {
+    CART: '/orders/cart/',
+    CART_CURRENT: '/orders/cart/current/',
+    CART_ADD_ITEM: '/orders/cart/add_item/',
+    CART_UPDATE_ITEM: '/orders/cart/update_item/',
+    CART_REMOVE_ITEM: '/orders/cart/remove_item/',
+    CART_CLEAR: '/orders/cart/clear/',
+    CART_APPLY_COUPON: '/orders/cart/apply_coupon/',
+    CART_SET_ADDRESSES: '/orders/cart/set_addresses/',
+    CART_UPLOAD_PRESCRIPTION: '/orders/cart/upload_prescription/',
+    ORDERS: '/orders/orders/',
+    PAYMENTS: '/orders/payments/',
+    REFUNDS: '/orders/refunds/',
+    SHIPMENTS: '/orders/shipments/',
+  },
+
+  // Payments
+  PAYMENTS: {
+    PAYMENTS: '/payments/payments/',
+    MY_PAYMENTS: '/payments/payments/my_payments/',
+    METHODS: '/payments/methods/',
+    SAVED_METHODS: '/payments/saved-methods/',
+    GATEWAYS: '/payments/gateways/',
+    DISPUTES: '/payments/disputes/',
+    REFUNDS: '/payments/refunds/',
+    WEBHOOKS: '/payments/webhooks/',
+  },
+
+  // Promotions
+  PROMOTIONS: {
+    PROMOTIONS: '/promotions/promotions/',
+    ACTIVE: '/promotions/promotions/active/',
+    COUPONS: '/promotions/coupons/',
+    VALIDATE_COUPON: '/promotions/coupons/validate/',
+    REFERRALS: '/promotions/referrals/',
+    MY_REFERRALS: '/promotions/referrals/my_referrals/',
+    REFERRAL_PROGRAMS: '/promotions/referral-programs/',
+    REWARD_POINTS: '/promotions/reward-points/',
+  },
+
+  // Reviews
+  REVIEWS: {
+    REVIEWS: '/reviews/reviews/',
+    MY_REVIEWS: '/reviews/reviews/my_reviews/',
+    QUESTIONS: '/reviews/questions/',
+    MY_QUESTIONS: '/reviews/questions/my_questions/',
+    ANSWERS: '/reviews/answers/',
+    MY_ANSWERS: '/reviews/answers/my_answers/',
+  },
+
+  // Support
+  SUPPORT: {
+    TICKETS: '/support/tickets/',
+    MY_TICKETS: '/support/tickets/my_tickets/',
+    CATEGORIES: '/support/categories/',
+    FAQS: '/support/faqs/',
+    CONTACT: '/support/contact/',
+    MY_MESSAGES: '/support/contact/my_messages/',
+    KB_ARTICLES: '/support/kb/articles/',
+    KB_CATEGORIES: '/support/kb/categories/',
+  },
+};
+      📄 src\hooks\useAuth.js
+
+================================================================================
+FILE: src\hooks\useAuth.js
+SIZE: 1,924 bytes
+MODIFIED: 2025-08-14 18:04:19.635176
+================================================================================
+
+import { useState, useEffect, useContext, createContext } from 'react';
+import AuthService from '../services/AuthService';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    initializeAuth();
+  }, []);
+
+  const initializeAuth = async () => {
+    try {
+      if (AuthService.isAuthenticated()) {
+        const userData = await AuthService.getCurrentUser();
+        setUser(userData);
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error('Auth initialization error:', error);
+      AuthService.logout();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (credentials) => {
+    try {
+      const response = await AuthService.login(credentials);
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await AuthService.logout();
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const response = await AuthService.register(userData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const value = {
+    user,
+    loading,
+    isAuthenticated,
+    login,
+    logout,
+    register,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+      📄 src\hooks\useCart.js
+
+================================================================================
+FILE: src\hooks\useCart.js
+SIZE: 3,150 bytes
+MODIFIED: 2025-08-14 18:04:41.523978
+================================================================================
+
+import { useState, useEffect, useContext, createContext } from 'react';
+import CartService from '../services/CartService';
+import { useAuth } from './useAuth';
+
+const CartContext = createContext();
+
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCart();
+    } else {
+      setCart(null);
+    }
+  }, [isAuthenticated]);
+
+  const fetchCart = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await CartService.getCurrentCart();
+      setCart(response);
+    } catch (err) {
+      setError(err);
+      setCart(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addItem = async (itemData) => {
+    try {
+      setLoading(true);
+      const response = await CartService.addItem(itemData);
+      setCart(response);
+      return response;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateItem = async (itemData) => {
+    try {
+      setLoading(true);
+      const response = await CartService.updateItem(itemData);
+      setCart(response);
+      return response;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeItem = async (itemData) => {
+    try {
+      setLoading(true);
+      const response = await CartService.removeItem(itemData);
+      setCart(response);
+      return response;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearCart = async () => {
+    try {
+      setLoading(true);
+      await CartService.clearCart();
+      setCart(null);
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const applyCoupon = async (couponData) => {
+    try {
+      setLoading(true);
+      const response = await CartService.applyCoupon(couponData);
+      setCart(response);
+      return response;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCartItemsCount = () => {
+    if (!cart || !cart.items) return 0;
+    return cart.items.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getCartTotal = () => {
+    if (!cart) return 0;
+    return cart.total_amount || 0;
+  };
+
+  const value = {
+    cart,
+    loading,
+    error,
+    fetchCart,
+    addItem,
+    updateItem,
+    removeItem,
+    clearCart,
+    applyCoupon,
+    getCartItemsCount,
+    getCartTotal,
+  };
+
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
+      📄 src\hooks\useProducts.js
+
+================================================================================
+FILE: src\hooks\useProducts.js
+SIZE: 2,422 bytes
+MODIFIED: 2025-08-14 18:04:32.341892
+================================================================================
+
+import { useState, useEffect } from 'react';
+import ProductService from '../services/ProductService';
+
+export const useProducts = (params = {}) => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState(null);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [JSON.stringify(params)]);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await ProductService.getProducts(params);
+      setProducts(response.results || response);
+      setPagination({
+        count: response.count,
+        next: response.next,
+        previous: response.previous,
+      });
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refetch = () => {
+    fetchProducts();
+  };
+
+  return {
+    products,
+    loading,
+    error,
+    pagination,
+    refetch,
+  };
+};
+
+export const useProduct = (slug) => {
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (slug) {
+      fetchProduct();
+    }
+  }, [slug]);
+
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await ProductService.getProduct(slug);
+      setProduct(response);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refetch = () => {
+    fetchProduct();
+  };
+
+  return {
+    product,
+    loading,
+    error,
+    refetch,
+  };
+};
+
+export const useCategories = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await ProductService.getCategories();
+      setCategories(response.results || response);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refetch = () => {
+    fetchCategories();
+  };
+
+  return {
+    categories,
+    loading,
+    error,
+    refetch,
+  };
+};
+    📄 src\index.js
+
+================================================================================
+FILE: src\index.js
+SIZE: 535 bytes
+MODIFIED: 2025-08-14 18:01:43.417003
+================================================================================
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+    📄 src\reportWebVitals.js
+
+================================================================================
+FILE: src\reportWebVitals.js
+SIZE: 362 bytes
+MODIFIED: 2025-08-14 18:01:43.452003
+================================================================================
+
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+    📄 src\setupTests.js
+
+================================================================================
+FILE: src\setupTests.js
+SIZE: 241 bytes
+MODIFIED: 2025-08-14 18:01:43.484002
+================================================================================
+
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+    🎨 src\App.css
+
+================================================================================
+FILE: src\App.css
+SIZE: 564 bytes
+MODIFIED: 2025-08-14 18:01:42.981816
+================================================================================
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+    🎨 src\index.css
+
+================================================================================
+FILE: src\index.css
+SIZE: 366 bytes
+MODIFIED: 2025-08-14 18:01:43.085817
+================================================================================
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+  📦 package.json
+
+================================================================================
+FILE: package.json
+SIZE: 893 bytes
+MODIFIED: 2026-05-02 23:32:05.301668
+================================================================================
+
+{
+  "name": "pharma-storefront",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.14.2",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+
+================================================================================
+📊 PROJECT SUMMARY
+================================================================================
+Total files bundled: 17
+Total size: 31,205 bytes
+
+⚛️  REACT COMPONENTS (14):
+  • App
+  • AuthProvider
+  • CartProvider
+  • apiClient
+  • getCartItemsCount
+  • getCartTotal
+  • new
+  • refetch
+  • reportWebVitals
+  • useAuth
+  • useCart
+  • useCategories
+  • useProduct
+  • useProducts
+
+🧭 ROUTES (9):
+  • /
+  • /cart
+  • /category/:slug
+  • /login
+  • /orders
+  • /products
+  • /products/:slug
+  • /profile
+  • /register
+
+📁 Directory structure:
+    App.js
+    App.test.js
+      AuthService.js
+      CartService.js
+      OrderService.js
+      ProductService.js
+      client.js
+      endpoints.js
+      useAuth.js
+      useCart.js
+      useProducts.js
+    index.js
+    reportWebVitals.js
+    setupTests.js
+    App.css
+    index.css
+  package.json
+
+🕒 Bundle created: 2026-05-02 23:37:42
+================================================================================
