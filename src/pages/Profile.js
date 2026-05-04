@@ -6,8 +6,11 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     fetchProfile();
@@ -34,15 +37,32 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setError('');
+    setSuccess('');
+    setSaving(true);
+    
     try {
-      // Update profile logic here
-      setProfile(formData);
+      // Prepare data to send (only editable fields)
+      const updateData = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        phone_number: formData.phone_number  // note: field name is phone_number, not phone
+      };
+      
+      const updatedProfile = await AuthService.updateProfile(updateData);
+      setProfile(updatedProfile);
       setEditing(false);
+      setSuccess('اطلاعات با موفقیت به‌روزرسانی شد');
+      
+      // Optionally update the user in auth context
+      // The useAuth hook might also need to update, but localStorage is updated in AuthService
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
+      setError(error.message || 'خطا در به‌روزرسانی اطلاعات');
       console.error('Error updating profile:', error);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -51,7 +71,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-page container mx-auto px-4 py-8">
+    <div className="profile-page container mx-auto px-4 py-8" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="flex justify-between items-center mb-6">
@@ -65,6 +85,18 @@ const Profile = () => {
               </button>
             )}
           </div>
+
+          {error && (
+            <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
+              {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="bg-green-100 text-green-700 p-3 rounded-lg mb-4">
+              {success}
+            </div>
+          )}
 
           {editing ? (
             <form onSubmit={handleSubmit}>
@@ -105,8 +137,8 @@ const Profile = () => {
                 <label className="block mb-2">شماره تلفن</label>
                 <input
                   type="tel"
-                  name="phone"
-                  value={formData.phone || ''}
+                  name="phone_number"   // ← change from 'phone' to 'phone_number'
+                  value={formData.phone_number || ''}
                   onChange={handleChange}
                   className="w-full border rounded-lg p-2"
                 />
@@ -115,9 +147,10 @@ const Profile = () => {
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  disabled={saving}
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400"
                 >
-                  ذخیره تغییرات
+                  {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
                 </button>
                 <button
                   type="button"
@@ -144,7 +177,7 @@ const Profile = () => {
               </div>
               <div className="border-b pb-3">
                 <span className="font-semibold">شماره تلفن:</span>
-                <span className="mr-2">{profile?.phone || '—'}</span>
+                <span className="mr-2">{profile?.phone_number || '—'}</span>
               </div>
             </div>
           )}

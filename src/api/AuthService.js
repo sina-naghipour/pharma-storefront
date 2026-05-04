@@ -68,6 +68,18 @@ class AuthService {
     return user ? JSON.parse(user) : null;
   }
 
+  async updateProfile(userData) {
+    try {
+      // Use the update_profile endpoint instead of user_me
+      const response = await apiClient.patch(ENDPOINTS.ACCOUNTS.UPDATE_PROFILE, userData);
+      const updatedUser = response.data;
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   handleError(error) {
     if (error.response) {
       return {

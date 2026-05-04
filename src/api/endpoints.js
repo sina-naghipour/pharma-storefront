@@ -15,6 +15,7 @@ export const ENDPOINTS = {
     PASSWORD_RESET: '/accounts/users/password_reset/',
     PASSWORD_RESET_CONFIRM: '/accounts/users/password_reset_confirm/',
     PROFILES: '/accounts/profiles/',
+    UPDATE_PROFILE: '/accounts/users/update_profile/',
     MY_PROFILE: '/accounts/profiles/my_profile/',
     ADDRESSES: '/accounts/addresses/',
     DEFAULT_BILLING: '/accounts/addresses/default_billing/',
