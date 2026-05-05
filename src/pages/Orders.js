@@ -7,10 +7,12 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [cancellingId, setCancellingId] = useState(null);
 
   const statusOptions = [
     { value: 'all', label: 'همه سفارشات' },
@@ -38,7 +40,7 @@ const Orders = () => {
       const response = await OrderService.getOrders(params);
       const ordersData = response.results || response;
       setOrders(ordersData);
-      setTotalPages(Math.ceil((response.count || response.length) / 10));
+      setTotalPages(Math.ceil((response.count || ordersData.length) / 10));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -46,17 +48,34 @@ const Orders = () => {
     }
   };
 
+  const handleCancelOrder = async (orderId) => {
+    if (!window.confirm('آیا از لغو این سفارش مطمئن هستید؟')) return;
+    setCancellingId(orderId);
+    setError('');
+    setSuccess('');
+    try {
+      await OrderService.cancelOrder(orderId);
+      setSuccess('سفارش با موفقیت لغو شد');
+      fetchOrders();
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message || 'خطا در لغو سفارش');
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
   const getStatusColor = (status) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      payment_processing: 'bg-blue-100 text-blue-800',
-      paid: 'bg-green-100 text-green-800',
-      preparing: 'bg-purple-100 text-purple-800',
-      shipped: 'bg-indigo-100 text-indigo-800',
-      delivered: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800',
+      pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+      payment_processing: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
+      paid: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+      preparing: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300',
+      shipped: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300',
+      delivered: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+      cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300',
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[status] || 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
   };
 
   const getStatusText = (status) => {
@@ -98,12 +117,23 @@ const Orders = () => {
     setCurrentPage(1);
   };
 
-  if (loading) return <div className="text-center py-8">در حال بارگذاری...</div>;
-  if (error) return <div className="text-center py-8 text-red-600">خطا: {error}</div>;
+  if (loading) return <div className="text-center py-8 text-gray-600 dark:text-gray-400">در حال بارگذاری...</div>;
 
   return (
     <div className="orders-page container mx-auto px-4 py-8" dir="rtl">
-      <h1 className="text-3xl font-bold mb-8">سفارشات من</h1>
+      <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">سفارشات من</h1>
+
+      {/* Success / Error messages */}
+      {success && (
+        <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-3 rounded-lg mb-4">
+          {success}
+        </div>
+      )}
+      {error && (
+        <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4">
+          {error}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -113,14 +143,14 @@ const Orders = () => {
             placeholder="جستجوی شماره سفارش..."
             value={searchTerm}
             onChange={handleSearch}
-            className="w-full border rounded-lg p-2"
+            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
           />
         </div>
         <div className="md:w-64">
           <select
             value={filterStatus}
             onChange={handleStatusFilter}
-            className="w-full border rounded-lg p-2"
+            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
           >
             {statusOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -131,16 +161,16 @@ const Orders = () => {
 
       {orders.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-600 mb-4">هیچ سفارشی با این شرایط یافت نشد</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">هیچ سفارشی با این شرایط یافت نشد</p>
           {filterStatus !== 'all' || searchTerm ? (
             <button
               onClick={() => { setFilterStatus('all'); setSearchTerm(''); }}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-primary-600 dark:text-primary-400 hover:underline"
             >
               حذف فیلترها
             </button>
           ) : (
-            <Link to="/products" className="bg-blue-600 text-white px-6 py-2 rounded-lg">
+            <Link to="/products" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
               شروع خرید
             </Link>
           )}
@@ -149,15 +179,17 @@ const Orders = () => {
         <>
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="border-b bg-gray-50 p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <div key={order.id} className="bg-white dark:bg-dark-surface rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-dark-border">
+                <div className="border-b border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-bg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div>
-                    <span className="font-semibold">شماره سفارش:</span>
-                    <span className="mr-2 font-mono">{order.order_number || order.id.slice(0, 8)}</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-300">شماره سفارش:</span>
+                    <span className="mr-2 font-mono text-gray-900 dark:text-white">
+                      {order.order_number || order.id.slice(0, 8)}
+                    </span>
                   </div>
                   <div>
-                    <span className="font-semibold">تاریخ:</span>
-                    <span className="mr-2">{toPersianDate(order.created_at)}</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-300">تاریخ:</span>
+                    <span className="mr-2 text-gray-900 dark:text-white">{toPersianDate(order.created_at)}</span>
                   </div>
                   <div>
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
@@ -167,72 +199,71 @@ const Orders = () => {
                 </div>
 
                 <div className="p-4">
-                  {/* Items section – only show if items exist */}
-                  {order.items && order.items.length > 0 && (
-                    <div className="space-y-2">
+                  {order.items && order.items.length > 0 ? (
+                    <div className="space-y-2 mb-4">
                       {order.items.slice(0, 3).map((item) => (
-                        <div key={item.id} className="flex justify-between items-center">
+                        <div key={item.id} className="flex justify-between items-center text-gray-700 dark:text-gray-300">
                           <div>
                             <span className="font-medium">{item.product_name || item.product?.name}</span>
-                            <span className="text-gray-600 mr-2">× {item.quantity}</span>
+                            <span className="text-gray-500 dark:text-gray-400 mr-2">× {item.quantity}</span>
                           </div>
                           <span>{formatPrice(item.unit_price || item.price)}</span>
                         </div>
                       ))}
                       {order.items.length > 3 && (
-                        <p className="text-gray-600">و {order.items.length - 3} محصول دیگر...</p>
+                        <p className="text-gray-500 dark:text-gray-400">و {order.items.length - 3} محصول دیگر...</p>
                       )}
                     </div>
+                  ) : (
+                    <div className="text-gray-500 dark:text-gray-400 text-sm mb-4">جزئیات محصولات در صفحه سفارش قابل مشاهده است</div>
                   )}
 
-                  <div className="border-t mt-4 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                  <div className="border-t border-gray-200 dark:border-dark-border pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                      <span className="font-semibold">مبلغ کل:</span>
-                      <span className="mr-2 text-xl text-blue-600 font-bold">
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">مبلغ کل:</span>
+                      <span className="mr-2 text-xl text-primary-600 dark:text-primary-400 font-bold">
                         {formatPrice(order.total || order.total_amount)}
                       </span>
                     </div>
-                    <Link
-                      to={`/orders/${order.id}`}
-                      className="mt-2 sm:mt-0 text-blue-600 hover:text-blue-800"
-                    >
-                      مشاهده جزئیات
-                    </Link>
-                  </div>
-
-                  {/* Cancel button – only if pending and cancellable */}
-                  {order.status === 'pending' && order.can_cancel && (
-                    <div className="mt-2 text-left">
-                      <button
-                        onClick={() => {/* implement cancel order */}}
-                        className="text-red-600 hover:text-red-800 text-sm"
+                    <div className="flex gap-3">
+                      <Link
+                        to={`/orders/${order.id}`}
+                        className="text-primary-600 dark:text-primary-400 hover:underline text-sm"
                       >
-                        لغو سفارش
-                      </button>
+                        مشاهده جزئیات
+                      </Link>
+                      {order.status === 'pending' && !order.cancelled && (
+                        <button
+                          onClick={() => handleCancelOrder(order.id)}
+                          disabled={cancellingId === order.id}
+                          className="text-red-600 dark:text-red-400 hover:underline text-sm disabled:opacity-50"
+                        >
+                          {cancellingId === order.id ? 'در حال لغو...' : 'لغو سفارش'}
+                        </button>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-8">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
               >
                 قبلی
               </button>
-              <span className="px-3 py-1">
+              <span className="px-3 py-1 text-gray-700 dark:text-gray-300">
                 صفحه {currentPage} از {totalPages}
               </span>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
               >
                 بعدی
               </button>

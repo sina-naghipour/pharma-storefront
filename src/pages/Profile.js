@@ -64,20 +64,20 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">در حال بارگذاری...</div>;
+    return <div className="text-center py-8 text-gray-600 dark:text-gray-400">در حال بارگذاری...</div>;
   }
 
   return (
     <div className="profile-page container mx-auto px-4 py-8" dir="rtl">
       <div className="max-w-2xl mx-auto">
         {/* User Profile Card */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white dark:bg-dark-surface rounded-xl shadow-lg p-8 border border-gray-100 dark:border-dark-border">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">پروفایل کاربری</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">پروفایل کاربری</h1>
             {!editing && (
               <button
                 onClick={() => setEditing(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
               >
                 ویرایش پروفایل
               </button>
@@ -85,13 +85,13 @@ const Profile = () => {
           </div>
 
           {error && (
-            <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
+            <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4">
               {error}
             </div>
           )}
           
           {success && (
-            <div className="bg-green-100 text-green-700 p-3 rounded-lg mb-4">
+            <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-3 rounded-lg mb-4">
               {success}
             </div>
           )}
@@ -99,46 +99,46 @@ const Profile = () => {
           {editing ? (
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block mb-2">نام</label>
+                <label className="block mb-2 text-gray-700 dark:text-gray-300">نام</label>
                 <input
                   type="text"
                   name="first_name"
                   value={formData.first_name || ''}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2"
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">نام خانوادگی</label>
+                <label className="block mb-2 text-gray-700 dark:text-gray-300">نام خانوادگی</label>
                 <input
                   type="text"
                   name="last_name"
                   value={formData.last_name || ''}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2"
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block mb-2">ایمیل</label>
+                <label className="block mb-2 text-gray-700 dark:text-gray-300">ایمیل</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email || ''}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2"
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
                 />
               </div>
 
               <div className="mb-6">
-                <label className="block mb-2">شماره تلفن</label>
+                <label className="block mb-2 text-gray-700 dark:text-gray-300">شماره تلفن</label>
                 <input
                   type="tel"
                   name="phone_number"
                   value={formData.phone_number || ''}
                   onChange={handleChange}
-                  className="w-full border rounded-lg p-2"
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -146,14 +146,14 @@ const Profile = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition"
                 >
                   {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
                 >
                   انصراف
                 </button>
@@ -161,27 +161,27 @@ const Profile = () => {
             </form>
           ) : (
             <div className="space-y-4">
-              <div className="border-b pb-3">
-                <span className="font-semibold">نام:</span>
-                <span className="mr-2">{profile?.first_name || '—'}</span>
+              <div className="border-b border-gray-200 dark:border-dark-border pb-3">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">نام:</span>
+                <span className="mr-2 text-gray-900 dark:text-white">{profile?.first_name || '—'}</span>
               </div>
-              <div className="border-b pb-3">
-                <span className="font-semibold">نام خانوادگی:</span>
-                <span className="mr-2">{profile?.last_name || '—'}</span>
+              <div className="border-b border-gray-200 dark:border-dark-border pb-3">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">نام خانوادگی:</span>
+                <span className="mr-2 text-gray-900 dark:text-white">{profile?.last_name || '—'}</span>
               </div>
-              <div className="border-b pb-3">
-                <span className="font-semibold">ایمیل:</span>
-                <span className="mr-2">{profile?.email || '—'}</span>
+              <div className="border-b border-gray-200 dark:border-dark-border pb-3">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">ایمیل:</span>
+                <span className="mr-2 text-gray-900 dark:text-white">{profile?.email || '—'}</span>
               </div>
-              <div className="border-b pb-3">
-                <span className="font-semibold">شماره تلفن:</span>
-                <span className="mr-2">{profile?.phone_number || '—'}</span>
+              <div className="border-b border-gray-200 dark:border-dark-border pb-3">
+                <span className="font-semibold text-gray-700 dark:text-gray-300">شماره تلفن:</span>
+                <span className="mr-2 text-gray-900 dark:text-white">{profile?.phone_number || '—'}</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Address Manager Section */}
+        {/* Address Manager Section – already dark mode ready */}
         <div className="mt-6">
           <AddressManager />
         </div>
@@ -190,7 +190,7 @@ const Profile = () => {
         <div className="mt-6">
           <button
             onClick={logout}
-            className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700"
+            className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition"
           >
             خروج از حساب کاربری
           </button>

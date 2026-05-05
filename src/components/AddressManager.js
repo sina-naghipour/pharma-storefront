@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddressService from '../api/AddressService';
 
+// List of Iran provinces
 const IRAN_PROVINCES = [
   'آذربایجان شرقی', 'آذربایجان غربی', 'اردبیل', 'اصفهان', 'البرز', 'ایلام',
   'بوشهر', 'تهران', 'چهارمحال و بختیاری', 'خراسان جنوبی', 'خراسان رضوی',
@@ -139,52 +140,95 @@ const AddressManager = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-4">در حال بارگذاری آدرس‌ها...</div>;
+  if (loading) return <div className="text-center py-4 text-gray-600 dark:text-gray-400">در حال بارگذاری آدرس‌ها...</div>;
 
   return (
     <div className="address-manager mt-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">آدرس‌های من</h2>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">آدرس‌های من</h2>
         {!showForm && (
           <button
             onClick={() => { resetForm(); setShowForm(true); }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
           >
             + افزودن آدرس جدید
           </button>
         )}
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">{error}</div>}
-      {success && <div className="bg-green-100 text-green-700 p-3 rounded-lg mb-4">{success}</div>}
+      {error && (
+        <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-3 rounded-lg mb-4">
+          {success}
+        </div>
+      )}
 
       {/* Address Form */}
       {showForm && (
-        <div className="bg-gray-50 rounded-lg p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4">{editingId ? 'ویرایش آدرس' : 'آدرس جدید'}</h3>
+        <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 mb-6 border border-gray-200 dark:border-dark-border">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+            {editingId ? 'ویرایش آدرس' : 'آدرس جدید'}
+          </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1">نام *</label>
-                <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">نام *</label>
+                <input
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  required
+                />
               </div>
               <div>
-                <label className="block mb-1">نام خانوادگی *</label>
-                <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">نام خانوادگی *</label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  required
+                />
               </div>
             </div>
             <div>
-              <label className="block mb-1">آدرس (خط اول) *</label>
-              <input type="text" name="address_line_1" value={formData.address_line_1} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+              <label className="block mb-1 text-gray-700 dark:text-gray-300">آدرس (خط اول) *</label>
+              <input
+                type="text"
+                name="address_line_1"
+                value={formData.address_line_1}
+                onChange={handleChange}
+                className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                required
+              />
             </div>
             <div>
-              <label className="block mb-1">آدرس (خط دوم - اختیاری)</label>
-              <input type="text" name="address_line_2" value={formData.address_line_2} onChange={handleChange} className="w-full border rounded-lg p-2" />
+              <label className="block mb-1 text-gray-700 dark:text-gray-300">آدرس (خط دوم - اختیاری)</label>
+              <input
+                type="text"
+                name="address_line_2"
+                value={formData.address_line_2}
+                onChange={handleChange}
+                className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+              />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1">استان *</label>
-                <select name="state_province" value={formData.state_province} onChange={handleChange} className="w-full border rounded-lg p-2" required>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">استان *</label>
+                <select
+                  name="state_province"
+                  value={formData.state_province}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  required
+                >
                   <option value="">انتخاب استان</option>
                   {IRAN_PROVINCES.map(province => (
                     <option key={province} value={province}>{province}</option>
@@ -192,31 +236,64 @@ const AddressManager = () => {
                 </select>
               </div>
               <div>
-                <label className="block mb-1">شهر *</label>
-                <input type="text" name="city" value={formData.city} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">شهر *</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  required
+                />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1">کد پستی *</label>
-                <input type="text" name="postal_code" value={formData.postal_code} onChange={handleChange} className="w-full border rounded-lg p-2" required />
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">کد پستی *</label>
+                <input
+                  type="text"
+                  name="postal_code"
+                  value={formData.postal_code}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  required
+                />
               </div>
               <div>
-                <label className="block mb-1">شماره تلفن</label>
-                <input type="tel" name="phone_number" value={formData.phone_number} onChange={handleChange} className="w-full border rounded-lg p-2" />
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">شماره تلفن</label>
+                <input
+                  type="tel"
+                  name="phone_number"
+                  value={formData.phone_number}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                />
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" name="is_default" checked={formData.is_default} onChange={handleChange} />
+              <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <input
+                  type="checkbox"
+                  name="is_default"
+                  checked={formData.is_default}
+                  onChange={handleChange}
+                  className="w-4 h-4"
+                />
                 <span>آدرس پیش‌فرض باشد</span>
               </label>
             </div>
             <div className="flex gap-2">
-              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+              <button
+                type="submit"
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+              >
                 {editingId ? 'به‌روزرسانی' : 'ذخیره'}
               </button>
-              <button type="button" onClick={() => { setShowForm(false); resetForm(); }} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+              <button
+                type="button"
+                onClick={() => { setShowForm(false); resetForm(); }}
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+              >
                 انصراف
               </button>
             </div>
@@ -226,29 +303,48 @@ const AddressManager = () => {
 
       {/* Address List */}
       {addresses.length === 0 && !showForm ? (
-        <div className="text-center text-gray-500 py-8">هیچ آدرسی ثبت نشده است</div>
+        <div className="text-center text-gray-500 dark:text-gray-400 py-8">هیچ آدرسی ثبت نشده است</div>
       ) : (
         <div className="space-y-4">
           {addresses.map(address => (
-            <div key={address.id} className="border rounded-lg p-4 bg-white">
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="font-semibold text-lg">{address.first_name} {address.last_name}</div>
-                  <div className="text-gray-600 mt-1">{address.address_line_1}</div>
-                  {address.address_line_2 && <div className="text-gray-600">{address.address_line_2}</div>}
-                  <div className="text-gray-600">{address.city}, {address.state_province}</div>
-                  <div className="text-gray-600">کد پستی: {address.postal_code}</div>
-                  {address.phone_number && <div className="text-gray-600">تلفن: {address.phone_number}</div>}
-                  {address.is_default && <span className="inline-block mt-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded">پیش‌فرض</span>}
+            <div key={address.id} className="border border-gray-200 dark:border-dark-border rounded-xl p-4 bg-white dark:bg-dark-surface">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                <div className="flex-1">
+                  <div className="font-semibold text-lg text-gray-900 dark:text-white">
+                    {address.first_name} {address.last_name}
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400 mt-1">{address.address_line_1}</div>
+                  {address.address_line_2 && <div className="text-gray-600 dark:text-gray-400">{address.address_line_2}</div>}
+                  <div className="text-gray-600 dark:text-gray-400">{address.city}, {address.state_province}</div>
+                  <div className="text-gray-600 dark:text-gray-400">کد پستی: {address.postal_code}</div>
+                  {address.phone_number && <div className="text-gray-600 dark:text-gray-400">تلفن: {address.phone_number}</div>}
+                  {address.is_default && (
+                    <span className="inline-block mt-2 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full">
+                      پیش‌فرض
+                    </span>
+                  )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {!address.is_default && (
-                    <button onClick={() => handleSetDefault(address.id)} className="text-blue-600 hover:text-blue-800 text-sm">
+                    <button
+                      onClick={() => handleSetDefault(address.id)}
+                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm"
+                    >
                       تنظیم به عنوان پیش‌فرض
                     </button>
                   )}
-                  <button onClick={() => handleEdit(address)} className="text-blue-600 hover:text-blue-800">ویرایش</button>
-                  <button onClick={() => handleDelete(address.id)} className="text-red-600 hover:text-red-800">حذف</button>
+                  <button
+                    onClick={() => handleEdit(address)}
+                    className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm"
+                  >
+                    ویرایش
+                  </button>
+                  <button
+                    onClick={() => handleDelete(address.id)}
+                    className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
+                  >
+                    حذف
+                  </button>
                 </div>
               </div>
             </div>
