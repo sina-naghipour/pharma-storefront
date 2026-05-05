@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
+import { formatPrice } from '../utils/format';
 
 const Products = () => {
   const { slug } = useParams();
@@ -61,7 +62,7 @@ const Products = () => {
                       className="w-full h-48 object-cover rounded-md mb-4"
                     />
                     <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                    <p className="text-gray-600 mb-2">{product.price?.toLocaleString()} تومان</p>
+                    <p className="text-gray-600 mb-2">{formatPrice(product.price)}</p>
                     <Link 
                       to={`/products/${product.slug}`}
                       className="text-blue-600 hover:text-blue-800"

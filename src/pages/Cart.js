@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
+import { formatPrice } from '../utils/format';
 
 const Cart = () => {
   const { cart, updateItem, removeItem, clearCart, loading } = useCart();
@@ -96,7 +97,7 @@ const Cart = () => {
                 />
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg mb-2">{item.product.name}</h3>
-                  <p className="text-gray-600 mb-2">{item.unit_price?.toLocaleString()} تومان</p>
+                  <p className="text-gray-600 mb-2">{formatPrice(item.unit_price)}</p>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleQuantityChange(item, item.quantity - 1)}
@@ -120,9 +121,7 @@ const Cart = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold">
-                    {(item.unit_price * item.quantity)?.toLocaleString()} تومان
-                  </p>
+                  <p className="font-semibold">{formatPrice(item.unit_price * item.quantity)}</p>
                 </div>
               </div>
             ))}
@@ -143,7 +142,7 @@ const Cart = () => {
             <div className="border-t pt-4">
               <div className="flex justify-between mb-2">
                 <span>جمع کل:</span>
-                <span className="font-semibold">{cart.total?.toLocaleString()} تومان</span>
+                <span className="font-semibold">{formatPrice(cart.total)}</span>
               </div>
               <div className="flex justify-between mb-4 text-sm text-gray-600">
                 <span>هزینه ارسال:</span>
