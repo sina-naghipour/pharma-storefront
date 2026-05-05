@@ -83,7 +83,7 @@ class OrderService {
       throw this.handleError(error);
     }
   }
-
+  
   // Handle API errors
   handleError(error) {
     if (error.response) {

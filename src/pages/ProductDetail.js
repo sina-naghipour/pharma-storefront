@@ -180,8 +180,7 @@ const ProductDetail = () => {
           <button
             onClick={handleAddToCart}
             disabled={!isInStock}
-            className="hidden md:block w-full py-3 rounded-lg font-semibold transition mb-4"
-            className={`w-full py-3 rounded-lg font-semibold transition ${
+              className={`w-full py-3 rounded-lg font-semibold transition ${
               isInStock
                 ? 'bg-primary-600 text-white hover:bg-primary-700'
                 : 'bg-gray-300 dark:bg-dark-border text-gray-500 dark:text-gray-400 cursor-not-allowed'
