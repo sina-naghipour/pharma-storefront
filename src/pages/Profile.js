@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import AuthService from '../api/AuthService';
+import AddressManager from '../components/AddressManager';
 
 const Profile = () => {
   const { user, logout } = useAuth();
@@ -42,21 +43,17 @@ const Profile = () => {
     setSaving(true);
     
     try {
-      // Prepare data to send (only editable fields)
       const updateData = {
         first_name: formData.first_name,
         last_name: formData.last_name,
         email: formData.email,
-        phone_number: formData.phone_number  // note: field name is phone_number, not phone
+        phone_number: formData.phone_number
       };
       
       const updatedProfile = await AuthService.updateProfile(updateData);
       setProfile(updatedProfile);
       setEditing(false);
       setSuccess('اطلاعات با موفقیت به‌روزرسانی شد');
-      
-      // Optionally update the user in auth context
-      // The useAuth hook might also need to update, but localStorage is updated in AuthService
       setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       setError(error.message || 'خطا در به‌روزرسانی اطلاعات');
@@ -73,6 +70,7 @@ const Profile = () => {
   return (
     <div className="profile-page container mx-auto px-4 py-8" dir="rtl">
       <div className="max-w-2xl mx-auto">
+        {/* User Profile Card */}
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">پروفایل کاربری</h1>
@@ -137,7 +135,7 @@ const Profile = () => {
                 <label className="block mb-2">شماره تلفن</label>
                 <input
                   type="tel"
-                  name="phone_number"   // ← change from 'phone' to 'phone_number'
+                  name="phone_number"
                   value={formData.phone_number || ''}
                   onChange={handleChange}
                   className="w-full border rounded-lg p-2"
@@ -181,15 +179,21 @@ const Profile = () => {
               </div>
             </div>
           )}
+        </div>
 
-          <div className="mt-8 pt-6 border-t">
-            <button
-              onClick={logout}
-              className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700"
-            >
-              خروج از حساب کاربری
-            </button>
-          </div>
+        {/* Address Manager Section */}
+        <div className="mt-6">
+          <AddressManager />
+        </div>
+
+        {/* Logout Button */}
+        <div className="mt-6">
+          <button
+            onClick={logout}
+            className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700"
+          >
+            خروج از حساب کاربری
+          </button>
         </div>
       </div>
     </div>
