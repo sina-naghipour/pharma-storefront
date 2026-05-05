@@ -28,7 +28,6 @@ const Login = () => {
       await login(formData);
       navigate('/');
     } catch (err) {
-      // Show detailed error from backend if available
       if (err.data && typeof err.data === 'object') {
         const errorMessages = Object.values(err.data).flat().join('\n');
         setError(errorMessages || 'خطا در ورود به سیستم');
@@ -41,7 +40,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page container mx-auto px-4 py-8 max-w-md">
+    <div className="login-page container mx-auto px-4 py-8 max-w-md" dir="rtl">
       <div className="bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold text-center mb-6">ورود به حساب کاربری</h1>
         
@@ -51,7 +50,7 @@ const Login = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="on">
           <div className="mb-4">
             <label className="block mb-2">نام کاربری</label>
             <input
@@ -60,6 +59,7 @@ const Login = () => {
               value={formData.username}
               onChange={handleChange}
               required
+              autoComplete="username"
               className="w-full border rounded-lg p-2 focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -72,6 +72,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              autoComplete="current-password"
               className="w-full border rounded-lg p-2 focus:outline-none focus:border-blue-500"
             />
           </div>
