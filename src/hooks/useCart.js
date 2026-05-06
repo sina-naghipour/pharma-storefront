@@ -90,17 +90,37 @@ export const CartProvider = ({ children }) => {
   const applyCoupon = async (couponData) => {
     try {
       setLoading(true);
-      const response = await CartService.applyCoupon(couponData);
-      setCart(response);
-      return response;
+      await CartService.applyCoupon(couponData);
+      await fetchCart();
+      return true;
     } catch (err) {
-      setError(err);
-      throw err;
+      // Extract error message from various possible structures
+      let errorMessage = 'کد تخفیف صحیح نمی باشد';
+      
+      if (err.response?.data) {
+        const data = err.response.data;
+        if (typeof data === 'string') {
+          errorMessage = data;
+        } else if (data.error) {
+          errorMessage = data.error;
+        } else if (data.message) {
+          errorMessage = data.message;
+        } else if (data.detail) {
+          errorMessage = data.detail;
+        }
+      } else if (err.data) {
+        if (err.data.error) errorMessage = err.data.error;
+        else if (err.data.message) errorMessage = err.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError({ message: errorMessage });
+      throw { ...err, message: errorMessage };
     } finally {
       setLoading(false);
     }
   };
-
   const getCartItemsCount = () => {
     if (!cart || !cart.items) return 0;
     return cart.items.reduce((total, item) => total + item.quantity, 0);

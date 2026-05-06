@@ -54,7 +54,7 @@ class CartService {
 
   // Apply coupon
   async applyCoupon(couponData) {
-    try {
+  try {
       const response = await apiClient.post(ENDPOINTS.ORDERS.CART_APPLY_COUPON, couponData);
       return response.data;
     } catch (error) {

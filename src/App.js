@@ -11,13 +11,14 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
+import OrderDetail from './pages/OrderDetail';
+import Checkout from './pages/Checkout';
+import BlogList from './pages/BlogList';
+import BlogDetail from './pages/BlogDetail';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTopButton from './components/ScrollToTopButton';
-import Checkout from './pages/Checkout';
-import OrderDetail from './pages/OrderDetail';
-
 import './App.css';
 
 function App() {
@@ -39,18 +40,10 @@ function App() {
                   <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
                   <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                   <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-                  <Route path="/checkout" element={
-                      <ProtectedRoute>
-                        <Checkout />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route path="/orders/:id" element={
-                  <ProtectedRoute>
-                    <OrderDetail />
-                  </ProtectedRoute>
-                } />
-
+                  <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
+                  <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                  <Route path="/blog" element={<BlogList />} />
+                  <Route path="/blog/:slug" element={<BlogDetail />} />
                 </Routes>
               </main>
               <Footer />

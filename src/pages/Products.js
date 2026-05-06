@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useProducts } from '../hooks/useProducts';
 import { useCategories } from '../hooks/useProducts';
 import { formatPrice } from '../utils/format';
+import DiscountBadge from '../components/DiscountBadge';  // <-- import added
 
 const Products = () => {
   const { slug } = useParams();
@@ -224,15 +225,26 @@ const Products = () => {
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
+                        {/* Reusable DiscountBadge component */}
+                        <DiscountBadge percentage={product.discount_percentage} />
                         {!product.in_stock && (
-                          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">ناموجود</span>
+                          <span className="absolute top-2 left-2 bg-gray-700 text-white text-xs px-2 py-1 rounded-full">ناموجود</span>
                         )}
                       </div>
                       <div className="p-4">
                         <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2 line-clamp-1">{product.name}</h3>
-                        <div className="flex items-center justify-between mt-3">
-                          <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">{formatPrice(product.price)}</span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">{product.manufacturer_name || 'نامشخص'}</span>
+                        <div className="flex items-center gap-2 flex-wrap mt-2">
+                          <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">
+                            {formatPrice(product.price)}
+                          </span>
+                          {product.compare_price && (
+                            <span className="text-gray-400 line-through text-sm">
+                              {formatPrice(product.compare_price)}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          {product.manufacturer_name || 'نامشخص'}
                         </div>
                       </div>
                     </Link>

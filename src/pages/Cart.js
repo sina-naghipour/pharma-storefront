@@ -1,19 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { formatPrice } from '../utils/format';
 
 const Cart = () => {
-  const { cart, updateItem, removeItem, clearCart, loading } = useCart();
+  const { cart, updateItem, removeItem, clearCart, loading, applyCoupon } = useCart();
   const { isAuthenticated } = useAuth();
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [couponSuccess, setCouponSuccess] = useState('');
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-  // Helper to get product image – using product_details from cart API
-  const getProductImage = (item) => {
-    const details = item.product_details;
-    if (details?.primary_image) return details.primary_image;
-    if (details?.image) return details.image;
+  // Helper to get product image from product_details
+  const getProductImage = (productDetails) => {
+    if (productDetails?.primary_image) return productDetails.primary_image;
+    if (productDetails?.image) return productDetails.image;
     return '/placeholder.jpg';
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError('لطفا کد تخفیف را وارد کنید');
+      return;
+    }
+    setApplyingCoupon(true);
+    setCouponError('');
+    setCouponSuccess('');
+    try {
+      await applyCoupon({ code: couponCode });
+      setCouponSuccess('کد تخفیف با موفقیت اعمال شد');
+      setCouponCode('');
+    } catch (err) {
+      setCouponError(err.message || 'کد تخفیف صحیح نمی باشد');
+    } finally {
+      setApplyingCoupon(false);
+    }
   };
 
   if (!isAuthenticated) {
@@ -46,6 +68,10 @@ const Cart = () => {
     }
   };
 
+  const subtotal = cart.subtotal || 0;
+  const discount = cart.discount_amount || 0;
+  const total = cart.total || 0;
+
   return (
     <div className="cart-page container mx-auto px-4 py-8" dir="rtl">
       <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">سبد خرید</h1>
@@ -57,7 +83,7 @@ const Cart = () => {
             {cart.items.map((item) => (
               <div key={item.id} className="border-b border-gray-100 dark:border-dark-border p-4 flex flex-col sm:flex-row gap-4">
                 <img
-                  src={getProductImage(item)}
+                  src={getProductImage(item.product_details)}
                   alt={item.product_details?.name || 'محصول'}
                   className="w-24 h-24 object-cover rounded-lg"
                 />
@@ -104,26 +130,63 @@ const Cart = () => {
           </button>
         </div>
 
-        {/* Order Summary – already dark mode ready */}
+        {/* Order Summary */}
         <div className="lg:w-1/3">
           <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 border border-gray-200 dark:border-dark-border sticky top-20">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">خلاصه سفارش</h2>
-            <div className="border-t border-gray-200 dark:border-dark-border pt-4">
-              <div className="flex justify-between mb-2 text-gray-700 dark:text-gray-300">
+            <div className="space-y-2">
+              <div className="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>جمع کل:</span>
-                <span className="font-semibold text-primary-600 dark:text-primary-400">{formatPrice(cart.total)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
-              <div className="flex justify-between mb-4 text-sm text-gray-500 dark:text-gray-400">
+              {discount > 0 && (
+                <div className="flex justify-between text-green-600 dark:text-green-400">
+                  <span>تخفیف:</span>
+                  <span>-{formatPrice(discount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                 <span>هزینه ارسال:</span>
                 <span>در مرحله بعد محاسبه می‌شود</span>
               </div>
-              <Link
-                to="/checkout"
-                className="block w-full bg-primary-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-primary-700 transition"
-              >
-                ادامه فرآیند خرید
-              </Link>
+              <div className="border-t border-gray-200 dark:border-dark-border pt-2 mt-2">
+                <div className="flex justify-between font-bold text-lg text-gray-900 dark:text-white">
+                  <span>قابل پرداخت:</span>
+                  <span className="text-primary-600 dark:text-primary-400">{formatPrice(total)}</span>
+                </div>
+              </div>
             </div>
+
+            {/* Coupon Section */}
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-dark-border">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">کد تخفیف</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  placeholder="کد تخفیف خود را وارد کنید"
+                  className="flex-1 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  disabled={applyingCoupon}
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  disabled={applyingCoupon || !couponCode.trim()}
+                  className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50"
+                >
+                  {applyingCoupon ? 'در حال بررسی...' : 'اعمال'}
+                </button>
+              </div>
+              {couponError && <p className="text-red-600 text-sm mt-2">{couponError}</p>}
+              {couponSuccess && <p className="text-green-600 text-sm mt-2">{couponSuccess}</p>}
+            </div>
+
+            <Link
+              to="/checkout"
+              className="block w-full bg-primary-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-primary-700 transition mt-6"
+            >
+              ادامه فرآیند خرید
+            </Link>
           </div>
         </div>
       </div>

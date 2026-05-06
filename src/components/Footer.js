@@ -16,7 +16,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">دسترسی سریع</h3>
             <ul className="space-y-2">
               <li><Link to="/products" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">محصولات</Link></li>
-              <li><Link to="/about" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">درباره ما</Link></li>
+              <li><Link to="/blog" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">مجله سلامت</Link></li>
               <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">تماس با ما</Link></li>
             </ul>
           </div>

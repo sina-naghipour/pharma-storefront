@@ -4,6 +4,7 @@ import { useProduct } from '../hooks/useProducts';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { formatPrice, formatNumber } from '../utils/format';
+import DiscountBadge from '../components/DiscountBadge';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -120,20 +121,26 @@ const ProductDetail = () => {
 
         {/* Product Info */}
         <div className="md:w-1/2">
+          {/* Discount Badge (reusable) */}
+          <DiscountBadge percentage={product.discount_percentage} size="large" />
+
           <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{product.name}</h1>
           <p className="text-gray-600 dark:text-gray-400 mb-4">{product.description || product.short_description}</p>
 
           <div className="border-t border-b border-gray-200 dark:border-dark-border py-4 mb-4">
             <div className="flex justify-between mb-2">
               <span className="font-semibold text-gray-700 dark:text-gray-300">قیمت:</span>
-              <span className="text-2xl text-primary-600 dark:text-primary-400 font-bold">{formatPrice(product.price)}</span>
-            </div>
-            {product.compare_price && (
-              <div className="flex justify-between mb-2 text-gray-500 dark:text-gray-400">
-                <span>قیمت قبلی:</span>
-                <span className="line-through">{formatPrice(product.compare_price)}</span>
+              <div className="text-left">
+                <span className="text-2xl text-primary-600 dark:text-primary-400 font-bold">
+                  {formatPrice(product.price)}
+                </span>
+                {product.compare_price && (
+                  <span className="text-gray-400 line-through text-sm mr-2">
+                    {formatPrice(product.compare_price)}
+                  </span>
+                )}
               </div>
-            )}
+            </div>
             <div className="flex justify-between">
               <span className="font-semibold text-gray-700 dark:text-gray-300">موجودی:</span>
               <span className={stockClass}>{stockText}</span>
@@ -180,7 +187,7 @@ const ProductDetail = () => {
           <button
             onClick={handleAddToCart}
             disabled={!isInStock}
-              className={`w-full py-3 rounded-lg font-semibold transition ${
+            className={`w-full py-3 rounded-lg font-semibold transition ${
               isInStock
                 ? 'bg-primary-600 text-white hover:bg-primary-700'
                 : 'bg-gray-300 dark:bg-dark-border text-gray-500 dark:text-gray-400 cursor-not-allowed'
