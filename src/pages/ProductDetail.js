@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useProduct } from '../hooks/useProducts';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { formatPrice, formatNumber } from '../utils/format';
 import DiscountBadge from '../components/DiscountBadge';
+import ReviewList from '../components/ReviewList';
+import ReviewForm from '../components/ReviewForm';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -18,8 +20,6 @@ const ProductDetail = () => {
 
   const images = product?.images || [];
   const currentImage = images[currentImageIndex]?.image || null;
-
-  // Max allowed = stock_quantity (if tracked) or 999
   const maxAllowed = product?.track_inventory ? (product?.stock_quantity || 0) : 999;
 
   const increaseQuantity = () => {
@@ -121,7 +121,6 @@ const ProductDetail = () => {
 
         {/* Product Info */}
         <div className="md:w-1/2">
-          {/* Discount Badge (reusable) */}
           <DiscountBadge percentage={product.discount_percentage} size="large" />
 
           <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{product.name}</h1>
@@ -153,7 +152,6 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Quantity Selector – desktop visible */}
           {isInStock && (
             <div className="mb-4 hidden md:block">
               <label className="block mb-2 text-gray-700 dark:text-gray-300">تعداد:</label>
@@ -183,7 +181,6 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {/* Add to Cart Button – desktop */}
           <button
             onClick={handleAddToCart}
             disabled={!isInStock}
@@ -202,6 +199,12 @@ const ProductDetail = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="mt-12 border-t pt-8">
+        <ReviewList productId={product.id} />
+        <ReviewForm productId={product.id} productSlug={product.slug} onSuccess={() => window.location.reload()} />
       </div>
 
       {/* Sticky Add to Cart Bar – only on mobile */}
