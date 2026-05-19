@@ -67,7 +67,7 @@ const Register = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">ثبت نام</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">عضو جدید داروخانه آنلاین شوید</p>
@@ -88,7 +88,7 @@ const Register = () => {
                 value={formData.username}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                className="input-field"
               />
             </div>
 
@@ -100,7 +100,7 @@ const Register = () => {
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
               <div>
@@ -110,7 +110,7 @@ const Register = () => {
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
             </div>
@@ -123,7 +123,7 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
@@ -134,7 +134,7 @@ const Register = () => {
                 name="phone_number"
                 value={formData.phone_number}
                 onChange={handleChange}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
@@ -146,7 +146,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
@@ -158,14 +158,14 @@ const Register = () => {
                 value={formData.password_confirm}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 shadow-md"
+              className="btn-primary w-full disabled:opacity-50"
             >
               {loading ? 'در حال ثبت نام...' : 'ثبت نام'}
             </button>

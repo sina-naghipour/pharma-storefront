@@ -5,116 +5,67 @@ import { useAuth } from '../hooks/useAuth';
 import AddressService from '../api/AddressService';
 import OrderService from '../api/OrderService';
 import { formatPrice } from '../utils/format';
+import { Link } from 'react-router-dom';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cart, loading: cartLoading, applyCoupon } = useCart();
-  const { user, isAuthenticated } = useAuth();
-
+  const { cart, loading: cartLoading, clearCart } = useCart();
+  const { user } = useAuth();
+  
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('cod');
-  const [prescriptionFile, setPrescriptionFile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [loadingAddresses, setLoadingAddresses] = useState(true);
   
-  // Coupon state
-  const [couponCode, setCouponCode] = useState('');
-  const [couponError, setCouponError] = useState('');
-  const [couponSuccess, setCouponSuccess] = useState('');
-  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('online');
+  const [notes, setNotes] = useState('');
 
-  // Redirect if not authenticated or cart empty
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-    if (!cartLoading && (!cart || !cart.items || cart.items.length === 0)) {
-      navigate('/cart');
-    }
-  }, [isAuthenticated, cart, cartLoading, navigate]);
+    fetchAddresses();
+  }, []);
 
-  // Fetch user addresses
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const data = await AddressService.getAddresses();
-        setAddresses(data.results || data);
-        const defaultAddress = (data.results || data).find(addr => addr.is_default);
-        if (defaultAddress) {
-          setSelectedAddressId(defaultAddress.id);
-        }
-      } catch (err) {
-        setError('خطا در دریافت آدرس‌ها');
-      } finally {
-        setLoadingAddresses(false);
-      }
-    };
-    if (isAuthenticated) fetchAddresses();
-  }, [isAuthenticated]);
-
-  // Check if any product requires prescription
-  const requiresPrescription = cart?.items?.some(
-    item => item.product_details?.prescription_required === 'required'
-  );
-
-  const handleFileChange = (e) => {
-    setPrescriptionFile(e.target.files[0]);
-  };
-
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
-      setCouponError('لطفا کد تخفیف را وارد کنید');
-      return;
-    }
-    setApplyingCoupon(true);
-    setCouponError('');
-    setCouponSuccess('');
+  const fetchAddresses = async () => {
     try {
-      await applyCoupon({ code: couponCode });
-      setCouponSuccess('کد تخفیف با موفقیت اعمال شد');
-      setCouponCode('');
+      const data = await AddressService.getAddresses();
+      setAddresses(data.results || data);
+      if (data.results?.length > 0) {
+        const defaultAddress = data.results.find(addr => addr.is_default);
+        setSelectedAddressId(defaultAddress?.id || data.results[0].id);
+      }
     } catch (err) {
-      setCouponError(err.message || 'کد تخفیف نامعتبر است');
+      console.error('Error fetching addresses:', err);
+      setError('خطا در دریافت آدرس‌ها');
     } finally {
-      setApplyingCoupon(false);
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSubmitting(true);
-
     if (!selectedAddressId) {
-      setError('لطفا یک آدرس را انتخاب کنید');
-      setSubmitting(false);
+      setError('لطفا آدرس تحویل را انتخاب کنید');
+      return;
+    }
+    if (!cart?.items?.length) {
+      setError('سبد خرید خالی است');
       return;
     }
 
-    const orderData = {
-      shipping_address_id: selectedAddressId,
-      billing_address_id: selectedAddressId,
-      payment_method: paymentMethod,
-      use_same_address_for_billing: true,
-      customer_notes: '',
-    };
-
-    if (requiresPrescription && !cart?.prescription_file && !prescriptionFile) {
-      setError('لطفا نسخه پزشکی را بارگذاری کنید');
-      setSubmitting(false);
-      return;
-    }
+    setSubmitting(true);
+    setError('');
 
     try {
-      // If prescription file is provided, upload to cart first (you may need to implement this)
-      if (prescriptionFile && !cart?.prescription_file) {
-        // Example: await CartService.uploadPrescription({ prescription_file: prescriptionFile });
-        console.warn('Prescription upload not fully integrated yet');
-      }
-      const response = await OrderService.createOrder(orderData);
-      navigate(`/orders/${response.id}`, { state: { success: 'سفارش شما با موفقیت ثبت شد' } });
+      const orderData = {
+        shipping_address_id: selectedAddressId,
+        payment_method: paymentMethod,
+        notes: notes,
+      };
+      const order = await OrderService.createOrder(orderData);
+      // Clear cart after successful order creation
+      await clearCart();
+      // Redirect to payment page or order confirmation
+      navigate(`/orders/${order.id}`);
     } catch (err) {
       setError(err.message || 'خطا در ثبت سفارش');
     } finally {
@@ -122,137 +73,120 @@ const Checkout = () => {
     }
   };
 
-  if (cartLoading || loadingAddresses) {
+  if (cartLoading || loading) {
     return <div className="text-center py-8 text-gray-600 dark:text-gray-400">در حال بارگذاری...</div>;
   }
 
-  if (!cart || cart.items.length === 0) {
-    return null;
+  if (!cart || !cart.items || cart.items.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">سبد خرید خالی است</h1>
+        <Link to="/products" className="btn-primary inline-block">مشاهده محصولات</Link>
+      </div>
+    );
   }
 
+  const total = cart.total || 0;
   const subtotal = cart.subtotal || 0;
   const discount = cart.discount_amount || 0;
-  const total = cart.total || 0;
 
   return (
     <div className="container mx-auto px-4 py-8" dir="rtl">
-      <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">تکمیل سفارش</h1>
-
+      <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">تکمیل خرید</h1>
+      
       <div className="flex flex-col lg:flex-row gap-8">
+        {/* Checkout Form */}
         <div className="lg:w-2/3">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Address selection */}
-            <div className="bg-white dark:bg-dark-surface rounded-xl shadow p-6 border border-gray-100 dark:border-dark-border">
-              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">آدرس تحویل</h2>
+          <form onSubmit={handleSubmit}>
+            {/* Address Selection */}
+            <div className="card p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">آدرس تحویل</h2>
               {addresses.length === 0 ? (
-                <div>
+                <div className="text-center py-4">
                   <p className="text-gray-600 dark:text-gray-400 mb-3">هیچ آدرسی ثبت نشده است</p>
-                  <button type="button" onClick={() => navigate('/profile')} className="text-primary-600 dark:text-primary-400 underline">
-                    افزودن آدرس جدید
-                  </button>
+                  <Link to="/profile" className="btn-secondary inline-block">افزودن آدرس جدید</Link>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {addresses.map(addr => (
-                    <label key={addr.id} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-dark-border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-dark-bg">
+                  {addresses.map((address) => (
+                    <label key={address.id} className="flex items-start gap-3 p-3 border border-gray-200 dark:border-dark-border rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg transition cursor-pointer">
                       <input
                         type="radio"
-                        name="shippingAddress"
-                        value={addr.id}
-                        checked={selectedAddressId === addr.id}
-                        onChange={() => setSelectedAddressId(addr.id)}
+                        name="address"
+                        value={address.id}
+                        checked={selectedAddressId === address.id}
+                        onChange={() => setSelectedAddressId(address.id)}
                         className="mt-1"
                       />
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-900 dark:text-white">{addr.first_name} {addr.last_name}</div>
-                        <div className="text-gray-600 dark:text-gray-400">{addr.address_line_1}</div>
-                        {addr.address_line_2 && <div className="text-gray-600 dark:text-gray-400">{addr.address_line_2}</div>}
-                        <div className="text-gray-600 dark:text-gray-400">{addr.city}, {addr.state_province}</div>
-                        <div className="text-gray-600 dark:text-gray-400">کد پستی: {addr.postal_code}</div>
-                        {addr.phone_number && <div className="text-gray-600 dark:text-gray-400">تلفن: {addr.phone_number}</div>}
+                        <div className="font-medium text-gray-800 dark:text-white">
+                          {address.first_name} {address.last_name}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">{address.address_line_1}</div>
+                        {address.address_line_2 && <div className="text-sm text-gray-600 dark:text-gray-400">{address.address_line_2}</div>}
+                        <div className="text-sm text-gray-600 dark:text-gray-400">{address.city}, {address.state_province}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">کد پستی: {address.postal_code}</div>
+                        {address.phone_number && <div className="text-sm text-gray-600 dark:text-gray-400">تلفن: {address.phone_number}</div>}
+                        {address.is_default && (
+                          <span className="inline-block mt-1 text-xs text-primary-600 dark:text-primary-400">پیش‌فرض</span>
+                        )}
                       </div>
                     </label>
                   ))}
-                  <button type="button" onClick={() => navigate('/profile')} className="text-primary-600 dark:text-primary-400 text-sm mt-2">
+                  <Link to="/profile" className="text-primary-600 dark:text-primary-400 text-sm hover:underline inline-block mt-2">
                     + افزودن آدرس جدید
-                  </button>
+                  </Link>
                 </div>
               )}
             </div>
 
-            {/* Payment method */}
-            <div className="bg-white dark:bg-dark-surface rounded-xl shadow p-6 border border-gray-100 dark:border-dark-border">
-              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">روش پرداخت</h2>
-              <div className="space-y-2">
-                <label className="flex items-center gap-3">
+            {/* Payment Method */}
+            <div className="card p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">روش پرداخت</h2>
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 p-3 border border-gray-200 dark:border-dark-border rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg transition cursor-pointer">
                   <input
                     type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={paymentMethod === 'cod'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                  />
-                  <span>پرداخت در محل</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
+                    name="payment"
                     value="online"
                     checked={paymentMethod === 'online'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    onChange={() => setPaymentMethod('online')}
                   />
-                  <span>درگاه پرداخت آنلاین (به زودی)</span>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-white">پرداخت آنلاین</div>
+                    <div className="text-sm text-gray-500">پرداخت از طریق درگاه بانکی</div>
+                  </div>
+                </label>
+                <label className="flex items-center gap-3 p-3 border border-gray-200 dark:border-dark-border rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg transition cursor-pointer">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="cod"
+                    checked={paymentMethod === 'cod'}
+                    onChange={() => setPaymentMethod('cod')}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-white">پرداخت در محل</div>
+                    <div className="text-sm text-gray-500">پرداخت نقدی هنگام تحویل سفارش</div>
+                  </div>
                 </label>
               </div>
             </div>
 
-            {/* Prescription upload */}
-            {requiresPrescription && (
-              <div className="bg-white dark:bg-dark-surface rounded-xl shadow p-6 border border-gray-100 dark:border-dark-border">
-                <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">بارگذاری نسخه پزشکی</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm">
-                  برخی محصولات نیاز به نسخه پزشک دارند. لطفاً تصویر نسخه را بارگذاری کنید.
-                </p>
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={handleFileChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg"
-                />
-                {cart?.prescription_file && (
-                  <p className="text-green-600 dark:text-green-400 text-sm mt-2">✓ نسخه قبلاً بارگذاری شده است</p>
-                )}
-              </div>
-            )}
-
-            {/* Coupon Section */}
-            <div className="bg-white dark:bg-dark-surface rounded-xl shadow p-6 border border-gray-100 dark:border-dark-border">
-              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">کد تخفیف</h2>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  placeholder="کد تخفیف خود را وارد کنید"
-                  className="flex-1 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
-                  disabled={applyingCoupon}
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyCoupon}
-                  disabled={applyingCoupon || !couponCode.trim()}
-                  className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50"
-                >
-                  {applyingCoupon ? 'در حال بررسی...' : 'اعمال'}
-                </button>
-              </div>
-              {couponError && <p className="text-red-600 text-sm mt-2">{couponError}</p>}
-              {couponSuccess && <p className="text-green-600 text-sm mt-2">{couponSuccess}</p>}
+            {/* Order Notes */}
+            <div className="card p-6 mb-6">
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">یادداشت سفارش (اختیاری)</h2>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows="3"
+                placeholder="هرگونه نکته خاص درباره سفارش خود را وارد کنید..."
+                className="input-field"
+              />
             </div>
 
             {error && (
-              <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg">
+              <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-6">
                 {error}
               </div>
             )}
@@ -260,16 +194,16 @@ const Checkout = () => {
             <button
               type="submit"
               disabled={submitting || addresses.length === 0}
-              className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition disabled:opacity-50"
+              className="btn-primary w-full disabled:opacity-50"
             >
-              {submitting ? 'در حال ثبت سفارش...' : 'ثبت سفارش'}
+              {submitting ? 'در حال ثبت سفارش...' : 'ثبت نهایی سفارش'}
             </button>
           </form>
         </div>
 
-        {/* Order summary with discount display */}
+        {/* Order Summary */}
         <div className="lg:w-1/3">
-          <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 sticky top-20 border border-gray-200 dark:border-dark-border">
+          <div className="card p-6 sticky top-20">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">خلاصه سفارش</h2>
             <div className="space-y-2">
               <div className="flex justify-between text-gray-700 dark:text-gray-300">
@@ -284,7 +218,7 @@ const Checkout = () => {
               )}
               <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                 <span>هزینه ارسال:</span>
-                <span>محاسبه در مرحله بعد</span>
+                <span>در مرحله بعد محاسبه می‌شود</span>
               </div>
               <div className="border-t border-gray-200 dark:border-dark-border pt-2 mt-2">
                 <div className="flex justify-between font-bold text-lg text-gray-900 dark:text-white">

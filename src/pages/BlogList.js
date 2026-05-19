@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import BlogService from '../api/BlogService';
-import { formatDate } from '../utils/format'; // optional
 
 const BlogList = () => {
   const [posts, setPosts] = useState([]);
@@ -32,7 +31,7 @@ const BlogList = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map(post => (
           <Link key={post.id} to={`/blog/${post.slug}`} className="group">
-            <div className="bg-white dark:bg-dark-surface rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition border border-gray-100 dark:border-dark-border">
+            <div className="card bg-white dark:bg-dark-surface overflow-hidden transition-all duration-300">
               <div className="h-56 overflow-hidden">
                 <img 
                   src={post.featured_image || '/placeholder-blog.jpg'} 
@@ -42,7 +41,9 @@ const BlogList = () => {
               </div>
               <div className="p-4">
                 <div className="text-sm text-primary-600 dark:text-primary-400 mb-1">{post.category_name}</div>
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{post.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2 group-hover:text-primary-600 transition">
+                  {post.title}
+                </h2>
                 <p className="text-gray-600 dark:text-gray-400 line-clamp-3">{post.summary}</p>
                 <div className="mt-3 text-sm text-gray-500 dark:text-gray-500">
                   {new Date(post.published_at).toLocaleDateString('fa-IR')}

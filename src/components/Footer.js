@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 dark:bg-dark-surface border-t border-gray-200 dark:border-dark-border mt-16">
+    <footer className="bg-cream dark:bg-dark-surface border-t border-gray-200 dark:border-dark-border mt-16">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -15,25 +15,25 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">دسترسی سریع</h3>
             <ul className="space-y-2">
-              <li><Link to="/products" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">محصولات</Link></li>
-              <li><Link to="/blog" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">مجله سلامت</Link></li>
-              <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">تماس با ما</Link></li>
+              <li><Link to="/products" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">محصولات</Link></li>
+              <li><Link to="/blog" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">مجله سلامت</Link></li>
+              <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">تماس با ما</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">خدمات مشتریان</h3>
             <ul className="space-y-2">
-              <li><Link to="/faq" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">سوالات متداول</Link></li>
-              <li><Link to="/returns" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">بازگرداندن کالا</Link></li>
-              <li><Link to="/shipping" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">روش‌های ارسال</Link></li>
+              <li><Link to="/faq" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">سوالات متداول</Link></li>
+              <li><Link to="/returns" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">بازگرداندن کالا</Link></li>
+              <li><Link to="/shipping" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">روش‌های ارسال</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">تماس با ما</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-              <li>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</li>
-              <li>ایمیل: info@pharma.com</li>
-              <li>آدرس: تهران، خیابان مثال، پلاک ۱۲۳</li>
+              <li>📞 تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</li>
+              <li>✉️ ایمیل: info@pharma.com</li>
+              <li>📍 آدرس: تهران، خیابان مثال، پلاک ۱۲۳</li>
             </ul>
           </div>
         </div>

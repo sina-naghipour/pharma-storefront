@@ -71,13 +71,13 @@ const Profile = () => {
     <div className="profile-page container mx-auto px-4 py-8" dir="rtl">
       <div className="max-w-2xl mx-auto">
         {/* User Profile Card */}
-        <div className="bg-white dark:bg-dark-surface rounded-xl shadow-lg p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">پروفایل کاربری</h1>
             {!editing && (
               <button
                 onClick={() => setEditing(true)}
-                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
+                className="btn-primary !py-2 !px-4 text-sm"
               >
                 ویرایش پروفایل
               </button>
@@ -105,7 +105,7 @@ const Profile = () => {
                   name="first_name"
                   value={formData.first_name || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  className="input-field"
                 />
               </div>
 
@@ -116,7 +116,7 @@ const Profile = () => {
                   name="last_name"
                   value={formData.last_name || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
 
@@ -127,7 +127,7 @@ const Profile = () => {
                   name="email"
                   value={formData.email || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
 
@@ -138,7 +138,7 @@ const Profile = () => {
                   name="phone_number"
                   value={formData.phone_number || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
 
@@ -146,14 +146,14 @@ const Profile = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition"
+                  className="btn-primary disabled:opacity-50"
                 >
                   {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                  className="btn-secondary"
                 >
                   انصراف
                 </button>
@@ -181,7 +181,7 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Address Manager Section – already dark mode ready */}
+        {/* Address Manager Section – already updated separately */}
         <div className="mt-6">
           <AddressManager />
         </div>

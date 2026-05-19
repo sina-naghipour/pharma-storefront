@@ -123,7 +123,6 @@ const Orders = () => {
     <div className="orders-page container mx-auto px-4 py-8" dir="rtl">
       <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">سفارشات من</h1>
 
-      {/* Success / Error messages */}
       {success && (
         <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-3 rounded-lg mb-4">
           {success}
@@ -143,14 +142,14 @@ const Orders = () => {
             placeholder="جستجوی شماره سفارش..."
             value={searchTerm}
             onChange={handleSearch}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+            className="input-field"
           />
         </div>
         <div className="md:w-64">
           <select
             value={filterStatus}
             onChange={handleStatusFilter}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+            className="w-full border border-gray-200 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
           >
             {statusOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -170,16 +169,14 @@ const Orders = () => {
               حذف فیلترها
             </button>
           ) : (
-            <Link to="/products" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
-              شروع خرید
-            </Link>
+            <Link to="/products" className="btn-primary inline-block">شروع خرید</Link>
           )}
         </div>
       ) : (
         <>
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white dark:bg-dark-surface rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-dark-border">
+              <div key={order.id} className="card bg-white dark:bg-dark-surface overflow-hidden">
                 <div className="border-b border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-bg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div>
                     <span className="font-semibold text-gray-700 dark:text-gray-300">شماره سفارش:</span>
@@ -211,7 +208,7 @@ const Orders = () => {
                         </div>
                       ))}
                       {order.items.length > 3 && (
-                        <p className="text-gray-500 dark:text-gray-400">و {order.items.length - 3} محصول دیگر...</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm">و {order.items.length - 3} محصول دیگر...</p>
                       )}
                     </div>
                   ) : (
@@ -253,7 +250,7 @@ const Orders = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
+                className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg transition"
               >
                 قبلی
               </button>
@@ -263,7 +260,7 @@ const Orders = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
+                className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg transition"
               >
                 بعدی
               </button>

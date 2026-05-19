@@ -12,7 +12,6 @@ const Cart = () => {
   const [couponSuccess, setCouponSuccess] = useState('');
   const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-  // Helper to get product image from product_details
   const getProductImage = (productDetails) => {
     if (productDetails?.primary_image) return productDetails.primary_image;
     if (productDetails?.image) return productDetails.image;
@@ -42,9 +41,7 @@ const Cart = () => {
     return (
       <div className="cart-page container mx-auto px-4 py-8 text-center">
         <p className="text-xl mb-4 text-gray-700 dark:text-gray-300">لطفا ابتدا وارد حساب کاربری خود شوید</p>
-        <Link to="/login" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
-          ورود به حساب
-        </Link>
+        <Link to="/login" className="btn-primary inline-block">ورود به حساب</Link>
       </div>
     );
   }
@@ -55,9 +52,7 @@ const Cart = () => {
     return (
       <div className="cart-page container mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">سبد خرید خالی است</h1>
-        <Link to="/products" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
-          مشاهده محصولات
-        </Link>
+        <Link to="/products" className="btn-primary inline-block">مشاهده محصولات</Link>
       </div>
     );
   }
@@ -79,7 +74,7 @@ const Cart = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Cart Items */}
         <div className="lg:w-2/3">
-          <div className="bg-white dark:bg-dark-surface rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-dark-border">
+          <div className="card bg-white dark:bg-dark-surface overflow-hidden">
             {cart.items.map((item) => (
               <div key={item.id} className="border-b border-gray-100 dark:border-dark-border p-4 flex flex-col sm:flex-row gap-4">
                 <img
@@ -95,27 +90,27 @@ const Cart = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleQuantityChange(item, item.quantity - 1)}
-                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg text-gray-700 dark:text-gray-300"
+                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg"
                     >
                       -
                     </button>
                     <span className="w-12 text-center text-gray-800 dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => handleQuantityChange(item, item.quantity + 1)}
-                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg text-gray-700 dark:text-gray-300"
+                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg"
                     >
                       +
                     </button>
                     <button
                       onClick={() => removeItem({ item_id: item.id })}
-                      className="ml-4 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      className="ml-4 text-red-600 hover:text-red-700"
                     >
                       حذف
                     </button>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-800 dark:text-white">
+                  <p className="font-semibold text-primary-600 dark:text-primary-400">
                     {formatPrice(item.unit_price * item.quantity)}
                   </p>
                 </div>
@@ -124,7 +119,7 @@ const Cart = () => {
           </div>
           <button
             onClick={clearCart}
-            className="mt-4 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition"
+            className="mt-4 text-red-600 hover:text-red-700 transition"
           >
             حذف همه موارد
           </button>
@@ -132,7 +127,7 @@ const Cart = () => {
 
         {/* Order Summary */}
         <div className="lg:w-1/3">
-          <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 border border-gray-200 dark:border-dark-border sticky top-20">
+          <div className="card bg-gray-50 dark:bg-dark-surface p-6 sticky top-20">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">خلاصه سفارش</h2>
             <div className="space-y-2">
               <div className="flex justify-between text-gray-700 dark:text-gray-300">
@@ -166,13 +161,13 @@ const Cart = () => {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   placeholder="کد تخفیف خود را وارد کنید"
-                  className="flex-1 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field flex-1"
                   disabled={applyingCoupon}
                 />
                 <button
                   onClick={handleApplyCoupon}
                   disabled={applyingCoupon || !couponCode.trim()}
-                  className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50"
+                  className="btn-primary !py-2 !px-4 disabled:opacity-50"
                 >
                   {applyingCoupon ? 'در حال بررسی...' : 'اعمال'}
                 </button>
@@ -183,7 +178,7 @@ const Cart = () => {
 
             <Link
               to="/checkout"
-              className="block w-full bg-primary-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-primary-700 transition mt-6"
+              className="block w-full btn-primary text-center mt-6"
             >
               ادامه فرآیند خرید
             </Link>

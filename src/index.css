@@ -4,12 +4,23 @@
 
 @layer base {
   body {
-    @apply bg-white text-gray-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-200;
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply bg-cream text-gray-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-200;
+    font-family: 'Vazirmatn', 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus ring uses new primary color */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
   }
 }
 
-/* Custom scrollbar (optional) */
+* {
+  font-family: inherit;
+}
+
+/* Custom scrollbar (preserved from original) */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -18,4 +29,112 @@
 }
 ::-webkit-scrollbar-thumb {
   @apply bg-primary-400 rounded-full;
+}
+
+/* Markdown table styling (preserved from original) */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+.prose th,
+.prose td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  text-align: right;
+}
+.prose th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+.dark .prose th {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+.dark .prose td {
+  border-color: #374151;
+}
+.prose h1 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.prose ul, .prose ol {
+  padding-right: 1.5rem;
+  margin: 0.5rem 0;
+}
+.prose blockquote {
+  border-right: 4px solid #3b82f6;
+  padding-right: 1rem;
+  margin: 1rem 0;
+  color: #4b5563;
+  font-style: italic;
+}
+.dark .prose blockquote {
+  color: #9ca3af;
+}
+
+/* ===== NEW MODERN CLINICAL MINIMALISM STYLES ===== */
+
+@layer components {
+  /* Elegant card – used for product cards, blog cards, etc. */
+  .card {
+    @apply bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-hover transition-all duration-300;
+  }
+
+  /* Primary button – deep teal */
+  .btn-primary {
+    @apply bg-primary-500 text-white px-6 py-3 rounded-full font-medium shadow-sm hover:bg-primary-600 hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5;
+  }
+
+  /* Secondary button – white with teal border */
+  .btn-secondary {
+    @apply bg-white text-primary-600 border border-primary-200 px-6 py-3 rounded-full font-medium shadow-sm hover:bg-gray-50 hover:border-primary-300 transition-all duration-200;
+  }
+
+  /* Outline button – subtle border */
+  .btn-outline {
+    @apply border border-gray-300 bg-transparent px-6 py-3 rounded-full font-medium text-gray-700 hover:border-primary-400 hover:text-primary-600 transition-all;
+  }
+
+  /* Form inputs */
+  .input-field {
+    @apply w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-white/80 focus:bg-white focus:border-primary-300 focus:ring-2 focus:ring-primary-100 transition-all dark:bg-dark-bg dark:border-dark-border;
+  }
+
+  /* Small badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+}
+
+@layer utilities {
+  /* Smooth fade-in animation for dropdowns, modals */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

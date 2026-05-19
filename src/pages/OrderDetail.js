@@ -64,12 +64,12 @@ const OrderDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8" dir="rtl">
       <div className="mb-6">
-        <Link to="/orders" className="text-primary-600 dark:text-primary-400 hover:underline">
+        <Link to="/orders" className="text-primary-600 dark:text-primary-400 hover:underline transition">
           ← بازگشت به لیست سفارشات
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-dark-surface rounded-xl shadow-md p-6 border border-gray-200 dark:border-dark-border">
+      <div className="card p-6">
         <div className="flex flex-wrap justify-between items-start gap-4 border-b border-gray-200 dark:border-dark-border pb-4 mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">جزئیات سفارش</h1>
@@ -119,7 +119,7 @@ const OrderDetail = () => {
                   <td className="p-2 text-gray-900 dark:text-white">{item.product_name}</td>
                   <td className="p-2 text-gray-900 dark:text-white">{item.quantity}</td>
                   <td className="p-2 text-gray-900 dark:text-white">{formatPrice(item.unit_price)}</td>
-                  <td className="p-2 text-gray-900 dark:text-white">{formatPrice(item.unit_price * item.quantity)}</td>
+                  <td className="p-2 text-primary-600 dark:text-primary-400 font-medium">{formatPrice(item.unit_price * item.quantity)}</td>
                 </tr>
               ))}
             </tbody>

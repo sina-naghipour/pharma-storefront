@@ -42,7 +42,7 @@ const Login = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">ورود به حساب کاربری</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">به داروخانه آنلاین خوش آمدید</p>
@@ -64,7 +64,7 @@ const Login = () => {
                 onChange={handleChange}
                 required
                 autoComplete="username"
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+                className="input-field"
               />
             </div>
 
@@ -77,14 +77,18 @@ const Login = () => {
                 onChange={handleChange}
                 required
                 autoComplete="current-password"
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+                className="input-field"
               />
             </div>
-
+            <div className="text-left mt-1">
+              <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline">
+                رمز عبور خود را فراموش کرده‌اید؟
+              </Link>
+            </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              className="btn-primary w-full mt-6 disabled:opacity-50"
             >
               {loading ? 'در حال ورود...' : 'ورود'}
             </button>

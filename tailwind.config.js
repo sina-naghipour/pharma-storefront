@@ -1,33 +1,56 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class', // enable dark mode via class
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // New primary: deep teal
         primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+          50: '#e6f2f1',
+          100: '#b3d9d6',
+          200: '#80bfbc',
+          300: '#4da6a1',
+          400: '#268c87',
+          500: '#0F5B5C',
+          600: '#0c494a',
+          700: '#093737',
+          800: '#062525',
+          900: '#031212',
         },
+        // New accent: warm amber
+        accent: {
+          500: '#F59E0B',
+          600: '#c47e09',
+        },
+        // Soft background (light mode)
+        cream: '#F9FAFB',
+        // Dark mode custom colors (from original project)
         dark: {
-          bg: '#0f172a',     // dark background
-          surface: '#1e293b', // cards, modals
-          border: '#334155',
-          text: '#f1f5f9',
+          bg: '#1a1a2e',
+          surface: '#16213e',
+          text: '#e2e8f0',
+          border: '#2d3748',
         },
       },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+      borderRadius: {
+        'xl': '16px',
+        '2xl': '20px',
+      },
+      boxShadow: {
+        'soft': '0 4px 14px 0 rgba(0, 0, 0, 0.05)',
+        'hover': '0 12px 24px -8px rgba(0, 0, 0, 0.1)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.3s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
     },
   },
