@@ -10,7 +10,7 @@ const RatingStars = ({ rating, size = 'default', interactive = false, onRatingCh
 
   const renderStar = (value) => {
     const isFilled = rating >= value;
-    const className = `${starClass} ${interactive ? 'cursor-pointer' : ''} ${isFilled ? 'text-yellow-400' : 'text-gray-300'}`;
+    const className = `${starClass} ${interactive ? 'cursor-pointer hover:scale-110 transition-transform' : ''} ${isFilled ? 'text-primary-500' : 'text-gray-300 dark:text-gray-600'}`;
     if (interactive) {
       return (
         <svg

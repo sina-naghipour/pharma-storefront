@@ -95,7 +95,7 @@ const Home = () => {
       <section className="py-12 bg-white dark:bg-dark-bg">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">چرا داروخانه آنلاین؟</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">چرا داروخانه دکتر نقی پور؟</h2>
             <div className="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

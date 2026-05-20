@@ -34,6 +34,10 @@ module.exports = {
           text: '#e2e8f0',
           border: '#2d3748',
         },
+        coral: {
+          500: '#E76F51',
+          600: '#d45a3a',
+        },
       },
       borderRadius: {
         'xl': '16px',

@@ -9,7 +9,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">درباره ما</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              داروخانه آنلاین با هدف ارائه بهترین خدمات دارویی و بهداشتی به هموطنان عزیز تاسیس شده است.
+              داروخانه دکتر نقی پور با هدف ارائه بهترین خدمات دارویی و بهداشتی به هموطنان عزیز تاسیس شده است.
             </p>
           </div>
           <div>
@@ -38,7 +38,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-200 dark:border-dark-border mt-8 pt-8 text-center text-gray-500 dark:text-gray-500">
-          <p>&copy; 2024 داروخانه آنلاین. تمامی حقوق محفوظ است.</p>
+          <p>&copy; 2024 داروخانه دکتر نقی پور. تمامی حقوق محفوظ است.</p>
         </div>
       </div>
     </footer>

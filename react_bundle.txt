@@ -2,7 +2,7 @@
 REACT APPLICATION BUNDLE
 ================================================================================
 Project: pharma-storefront
-Generated: 2026-05-19 22:07:52
+Generated: 2026-05-20 23:36:14
 Directory: D:\codes\pharma\pharma-storefront
 ================================================================================
 
@@ -12,8 +12,8 @@ Directory: D:\codes\pharma\pharma-storefront
 
 ================================================================================
 FILE: src\App.js
-SIZE: 2,791 bytes
-MODIFIED: 2026-05-08 19:38:13.685091
+SIZE: 2,987 bytes
+MODIFIED: 2026-05-20 02:05:07.679320
 ================================================================================
 
 import React from 'react';
@@ -39,6 +39,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import ScrollToTop from './components/ScrollToTop';
+import SMSLogin from './components/SMSLogin';
+
 
 import './App.css';
 
@@ -48,6 +51,7 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <Router>
+            <ScrollToTop />
             <div className="min-h-screen flex flex-col" dir="rtl">
               <Header />
               <main className="flex-1">
@@ -67,6 +71,7 @@ function App() {
                   <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
                   <Route path="/blog" element={<BlogList />} />
                   <Route path="/blog/:slug" element={<BlogDetail />} />
+                  <Route path="/sms-login" element={<SMSLogin />} />
                 </Routes>
               </main>
               <Footer />
@@ -1090,14 +1095,13 @@ export const ENDPOINTS = {
 
 ================================================================================
 FILE: src\components\AddressManager.js
-SIZE: 14,819 bytes
-MODIFIED: 2026-05-06 01:50:36.503339
+SIZE: 13,492 bytes
+MODIFIED: 2026-05-20 01:24:43.118454
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
 import AddressService from '../api/AddressService';
 
-// List of Iran provinces
 const IRAN_PROVINCES = [
   'آذربایجان شرقی', 'آذربایجان غربی', 'اردبیل', 'اصفهان', 'البرز', 'ایلام',
   'بوشهر', 'تهران', 'چهارمحال و بختیاری', 'خراسان جنوبی', 'خراسان رضوی',
@@ -1245,7 +1249,7 @@ const AddressManager = () => {
         {!showForm && (
           <button
             onClick={() => { resetForm(); setShowForm(true); }}
-            className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
+            className="btn-primary !py-2 !px-4 text-sm"
           >
             + افزودن آدرس جدید
           </button>
@@ -1263,9 +1267,8 @@ const AddressManager = () => {
         </div>
       )}
 
-      {/* Address Form */}
       {showForm && (
-        <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 mb-6 border border-gray-200 dark:border-dark-border">
+        <div className="card p-6 mb-6">
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
             {editingId ? 'ویرایش آدرس' : 'آدرس جدید'}
           </h3>
@@ -1278,7 +1281,7 @@ const AddressManager = () => {
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  className="input-field"
                   required
                 />
               </div>
@@ -1289,7 +1292,7 @@ const AddressManager = () => {
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 />
               </div>
@@ -1301,7 +1304,7 @@ const AddressManager = () => {
                 name="address_line_1"
                 value={formData.address_line_1}
                 onChange={handleChange}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
                 required
               />
             </div>
@@ -1312,7 +1315,7 @@ const AddressManager = () => {
                 name="address_line_2"
                 value={formData.address_line_2}
                 onChange={handleChange}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1322,7 +1325,7 @@ const AddressManager = () => {
                   name="state_province"
                   value={formData.state_province}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 >
                   <option value="">انتخاب استان</option>
@@ -1338,7 +1341,7 @@ const AddressManager = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 />
               </div>
@@ -1351,7 +1354,7 @@ const AddressManager = () => {
                   name="postal_code"
                   value={formData.postal_code}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 />
               </div>
@@ -1362,7 +1365,7 @@ const AddressManager = () => {
                   name="phone_number"
                   value={formData.phone_number}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
             </div>
@@ -1373,7 +1376,7 @@ const AddressManager = () => {
                   name="is_default"
                   checked={formData.is_default}
                   onChange={handleChange}
-                  className="w-4 h-4"
+                  className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400"
                 />
                 <span>آدرس پیش‌فرض باشد</span>
               </label>
@@ -1381,14 +1384,14 @@ const AddressManager = () => {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                className="btn-primary"
               >
                 {editingId ? 'به‌روزرسانی' : 'ذخیره'}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowForm(false); resetForm(); }}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                className="btn-secondary"
               >
                 انصراف
               </button>
@@ -1397,13 +1400,12 @@ const AddressManager = () => {
         </div>
       )}
 
-      {/* Address List */}
       {addresses.length === 0 && !showForm ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-8">هیچ آدرسی ثبت نشده است</div>
       ) : (
         <div className="space-y-4">
           {addresses.map(address => (
-            <div key={address.id} className="border border-gray-200 dark:border-dark-border rounded-xl p-4 bg-white dark:bg-dark-surface">
+            <div key={address.id} className="card p-4">
               <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div className="flex-1">
                   <div className="font-semibold text-lg text-gray-900 dark:text-white">
@@ -1415,7 +1417,7 @@ const AddressManager = () => {
                   <div className="text-gray-600 dark:text-gray-400">کد پستی: {address.postal_code}</div>
                   {address.phone_number && <div className="text-gray-600 dark:text-gray-400">تلفن: {address.phone_number}</div>}
                   {address.is_default && (
-                    <span className="inline-block mt-2 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full">
+                    <span className="inline-block mt-2 bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-xs px-2 py-1 rounded-full">
                       پیش‌فرض
                     </span>
                   )}
@@ -1424,20 +1426,20 @@ const AddressManager = () => {
                   {!address.is_default && (
                     <button
                       onClick={() => handleSetDefault(address.id)}
-                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm"
+                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 text-sm transition"
                     >
                       تنظیم به عنوان پیش‌فرض
                     </button>
                   )}
                   <button
                     onClick={() => handleEdit(address)}
-                    className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm"
+                    className="text-primary-600 dark:text-primary-400 hover:text-primary-700 text-sm transition"
                   >
                     ویرایش
                   </button>
                   <button
                     onClick={() => handleDelete(address.id)}
-                    className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
+                    className="text-red-500 dark:text-red-400 hover:text-red-600 text-sm transition"
                   >
                     حذف
                   </button>
@@ -1456,8 +1458,8 @@ export default AddressManager;
 
 ================================================================================
 FILE: src\components\DiscountBadge.js
-SIZE: 509 bytes
-MODIFIED: 2026-05-06 23:30:09.536285
+SIZE: 511 bytes
+MODIFIED: 2026-05-20 01:19:36.234885
 ================================================================================
 
 import React from 'react';
@@ -1472,7 +1474,7 @@ const DiscountBadge = ({ percentage, size = 'default' }) => {
   };
   
   return (
-    <span className={`absolute top-2 right-2 bg-red-500 text-white font-bold rounded-full z-10 ${sizeClasses[size]}`}>
+    <span className={`absolute top-2 right-2 bg-coral-500 text-white font-bold rounded-full z-10 ${sizeClasses[size]}`}>
       {percentage}% تخفیف
     </span>
   );
@@ -1483,8 +1485,8 @@ export default DiscountBadge;
 
 ================================================================================
 FILE: src\components\Footer.js
-SIZE: 2,801 bytes
-MODIFIED: 2026-05-06 03:05:28.748689
+SIZE: 2,902 bytes
+MODIFIED: 2026-05-20 01:20:08.098281
 ================================================================================
 
 import React from 'react';
@@ -1492,7 +1494,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 dark:bg-dark-surface border-t border-gray-200 dark:border-dark-border mt-16">
+    <footer className="bg-cream dark:bg-dark-surface border-t border-gray-200 dark:border-dark-border mt-16">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -1504,25 +1506,25 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">دسترسی سریع</h3>
             <ul className="space-y-2">
-              <li><Link to="/products" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">محصولات</Link></li>
-              <li><Link to="/blog" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">مجله سلامت</Link></li>
-              <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">تماس با ما</Link></li>
+              <li><Link to="/products" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">محصولات</Link></li>
+              <li><Link to="/blog" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">مجله سلامت</Link></li>
+              <li><Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">تماس با ما</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">خدمات مشتریان</h3>
             <ul className="space-y-2">
-              <li><Link to="/faq" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">سوالات متداول</Link></li>
-              <li><Link to="/returns" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">بازگرداندن کالا</Link></li>
-              <li><Link to="/shipping" className="text-gray-600 dark:text-gray-400 hover:text-primary-600">روش‌های ارسال</Link></li>
+              <li><Link to="/faq" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">سوالات متداول</Link></li>
+              <li><Link to="/returns" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">بازگرداندن کالا</Link></li>
+              <li><Link to="/shipping" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 transition">روش‌های ارسال</Link></li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-4">تماس با ما</h3>
             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-              <li>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</li>
-              <li>ایمیل: info@pharma.com</li>
-              <li>آدرس: تهران، خیابان مثال، پلاک ۱۲۳</li>
+              <li>📞 تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</li>
+              <li>✉️ ایمیل: info@pharma.com</li>
+              <li>📍 آدرس: تهران، خیابان مثال، پلاک ۱۲۳</li>
             </ul>
           </div>
         </div>
@@ -1539,8 +1541,8 @@ export default Footer;
 
 ================================================================================
 FILE: src\components\Header.js
-SIZE: 12,263 bytes
-MODIFIED: 2026-05-19 21:42:47.708651
+SIZE: 14,840 bytes
+MODIFIED: 2026-05-20 01:20:08.098281
 ================================================================================
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -1571,7 +1573,6 @@ const Header = () => {
     navigate('/');
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -1621,8 +1622,8 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50">
       {showPromo && (
-        <div className="bg-primary-600 text-white text-center py-2 text-sm flex justify-between items-center px-4">
-          <span className="mx-auto">🎁 ارسال رایگان برای سفارش‌های بالای ۵۰۰,۰۰۰ تومان</span>
+        <div className="bg-primary-500 text-white text-center py-2 text-sm flex justify-between items-center px-4">
+          <span className="mx-auto">✨ ارسال رایگان برای سفارش‌های بالای ۵۰۰,۰۰۰ تومان</span>
           <button onClick={() => setShowPromo(false)} className="text-white hover:text-gray-200">✕</button>
         </div>
       )}
@@ -1634,23 +1635,22 @@ const Header = () => {
               داروخانه دکتر نقی پور
             </Link>
 
-            {/* Global Search Bar - centered */}
-            <div className="relative flex-1 max-w-md" ref={searchRef}>
+            {/* Desktop Search Bar */}
+            <div className="relative flex-1 max-w-md hidden md:block" ref={searchRef}>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={handleSearchChange}
                 onFocus={() => searchTerm.length >= 2 && setShowSearchDropdown(true)}
                 placeholder="جستجوی محصولات..."
-                className="w-full border border-gray-300 dark:border-dark-border rounded-full py-2 px-4 pr-10 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="input-field pr-10"
               />
               <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
 
-              {/* Search Dropdown */}
               {showSearchDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark-surface rounded-xl shadow-lg border border-gray-200 dark:border-dark-border overflow-hidden z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark-surface rounded-xl shadow-soft border border-gray-200 dark:border-dark-border overflow-hidden z-50 animate-fade-in">
                   {searchLoading ? (
                     <div className="p-4 text-center text-gray-500">در حال جستجو...</div>
                   ) : searchResults.length === 0 && searchTerm.length >= 2 ? (
@@ -1661,15 +1661,15 @@ const Header = () => {
                         <button
                           key={product.id}
                           onClick={() => handleSelectProduct(product)}
-                          className="w-full text-right p-3 hover:bg-gray-100 dark:hover:bg-dark-bg flex items-center gap-3 border-b last:border-0"
+                          className="w-full text-right p-3 hover:bg-gray-100 dark:hover:bg-dark-bg flex items-center gap-3 border-b last:border-0 border-gray-100 dark:border-dark-border"
                         >
                           <img
                             src={product.primary_image || '/placeholder.jpg'}
                             alt={product.name}
                             className="w-10 h-10 object-cover rounded"
                           />
-                          <div className="flex-1">
-                            <div className="font-medium text-gray-900 dark:text-white">{product.name}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 dark:text-white truncate">{product.name}</div>
                             <div className="text-sm text-gray-500">{formatPrice(product.price)}</div>
                           </div>
                         </button>
@@ -1680,10 +1680,13 @@ const Header = () => {
               )}
             </div>
 
-            {/* Desktop Navigation (right side) */}
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6 shrink-0">
               <Link to="/products" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition font-medium">
                 محصولات
+              </Link>
+              <Link to="/blog" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 transition font-medium">
+                مقالات
               </Link>
               {isAuthenticated ? (
                 <>
@@ -1692,7 +1695,7 @@ const Header = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.5 6M17 13l1.5 6M9 21h6M12 21v-6" />
                     </svg>
                     {cartCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      <span className="absolute -top-2 -right-2 bg-accent-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {cartCount}
                       </span>
                     )}
@@ -1708,7 +1711,7 @@ const Header = () => {
                       </svg>
                     </button>
                     {isUserDropdownOpen && (
-                      <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-dark-surface rounded-lg shadow-lg border dark:border-dark-border z-50">
+                      <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-dark-surface rounded-xl shadow-soft border border-gray-200 dark:border-dark-border z-50 animate-fade-in">
                         <Link
                           to="/profile"
                           className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
@@ -1739,9 +1742,7 @@ const Header = () => {
               ) : (
                 <div className="flex items-center gap-4">
                   <Link to="/login" className="text-gray-700 dark:text-gray-300 hover:text-primary-600">ورود</Link>
-                  <Link to="/register" className="bg-primary-600 text-white px-5 py-2 rounded-lg hover:bg-primary-700 transition">
-                    ثبت نام
-                  </Link>
+                  <Link to="/register" className="btn-primary !py-2 !px-5 text-sm">ثبت نام</Link>
                 </div>
               )}
               <ThemeToggle />
@@ -1755,16 +1756,62 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Mobile Menu (existing) */}
+          {/* Mobile Search Bar */}
+          <div className="mt-4 md:hidden relative" ref={searchRef}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onFocus={() => searchTerm.length >= 2 && setShowSearchDropdown(true)}
+              placeholder="جستجوی محصولات..."
+              className="input-field pr-10"
+            />
+            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+
+            {showSearchDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark-surface rounded-xl shadow-soft border border-gray-200 dark:border-dark-border overflow-hidden z-50 animate-fade-in">
+                {searchLoading ? (
+                  <div className="p-4 text-center text-gray-500">در حال جستجو...</div>
+                ) : searchResults.length === 0 && searchTerm.length >= 2 ? (
+                  <div className="p-4 text-center text-gray-500">محصولی یافت نشد</div>
+                ) : (
+                  <div className="max-h-96 overflow-y-auto">
+                    {searchResults.map((product) => (
+                      <button
+                        key={product.id}
+                        onClick={() => handleSelectProduct(product)}
+                        className="w-full text-right p-3 hover:bg-gray-100 dark:hover:bg-dark-bg flex items-center gap-3 border-b last:border-0 border-gray-100 dark:border-dark-border"
+                      >
+                        <img
+                          src={product.primary_image || '/placeholder.jpg'}
+                          alt={product.name}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 dark:text-white truncate">{product.name}</div>
+                          <div className="text-sm text-gray-500">{formatPrice(product.price)}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu */}
           {isMenuOpen && (
             <div className="md:hidden mt-4 pt-4 border-t dark:border-dark-border">
               <div className="flex flex-col space-y-3">
                 <Link to="/products" className="text-gray-700 dark:text-gray-300 py-2" onClick={() => setIsMenuOpen(false)}>محصولات</Link>
+                <Link to="/blog" className="text-gray-700 dark:text-gray-300 py-2" onClick={() => setIsMenuOpen(false)}>مقالات</Link>
                 {isAuthenticated ? (
                   <>
                     <Link to="/cart" className="text-gray-700 dark:text-gray-300 py-2 flex justify-between" onClick={() => setIsMenuOpen(false)}>
                       سبد خرید
-                      {cartCount > 0 && <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">{cartCount}</span>}
+                      {cartCount > 0 && <span className="bg-accent-500 text-white text-xs rounded-full px-2 py-0.5">{cartCount}</span>}
                     </Link>
                     <Link to="/profile" className="text-gray-700 dark:text-gray-300 py-2" onClick={() => setIsMenuOpen(false)}>پروفایل</Link>
                     <Link to="/orders" className="text-gray-700 dark:text-gray-300 py-2" onClick={() => setIsMenuOpen(false)}>سفارشات</Link>
@@ -1773,7 +1820,7 @@ const Header = () => {
                 ) : (
                   <>
                     <Link to="/login" className="text-gray-700 dark:text-gray-300 py-2" onClick={() => setIsMenuOpen(false)}>ورود</Link>
-                    <Link to="/register" className="bg-primary-600 text-white text-center py-2 rounded-lg" onClick={() => setIsMenuOpen(false)}>ثبت نام</Link>
+                    <Link to="/register" className="btn-primary text-center py-2" onClick={() => setIsMenuOpen(false)}>ثبت نام</Link>
                   </>
                 )}
                 <div className="py-2"><ThemeToggle /></div>
@@ -1791,8 +1838,8 @@ export default Header;
 
 ================================================================================
 FILE: src\components\RatingStars.js
-SIZE: 1,804 bytes
-MODIFIED: 2026-05-07 11:42:40.848828
+SIZE: 1,861 bytes
+MODIFIED: 2026-05-20 01:21:14.945128
 ================================================================================
 
 import React from 'react';
@@ -1807,7 +1854,7 @@ const RatingStars = ({ rating, size = 'default', interactive = false, onRatingCh
 
   const renderStar = (value) => {
     const isFilled = rating >= value;
-    const className = `${starClass} ${interactive ? 'cursor-pointer' : ''} ${isFilled ? 'text-yellow-400' : 'text-gray-300'}`;
+    const className = `${starClass} ${interactive ? 'cursor-pointer hover:scale-110 transition-transform' : ''} ${isFilled ? 'text-primary-500' : 'text-gray-300 dark:text-gray-600'}`;
     if (interactive) {
       return (
         <svg
@@ -1840,8 +1887,8 @@ export default RatingStars;
 
 ================================================================================
 FILE: src\components\ReviewComments.js
-SIZE: 4,395 bytes
-MODIFIED: 2026-05-08 19:10:51.782816
+SIZE: 4,123 bytes
+MODIFIED: 2026-05-20 01:23:36.167665
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -1854,10 +1901,9 @@ const ReviewComments = ({ reviewId }) => {
   const [newComment, setNewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); // optional
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    // get current user from localStorage if needed (to show edit/delete? not required)
     const user = localStorage.getItem('user');
     if (user) {
       try {
@@ -1886,7 +1932,7 @@ const ReviewComments = ({ reviewId }) => {
       await ReviewService.addComment(reviewId, newComment);
       setNewComment('');
       setShowForm(false);
-      await fetchComments(); // refresh
+      await fetchComments();
     } catch (err) {
       setError(err.message || 'خطا در ارسال نظر');
     } finally {
@@ -1894,11 +1940,10 @@ const ReviewComments = ({ reviewId }) => {
     }
   };
 
-  if (loading) return <div className="text-right text-xs text-gray-400 mt-2">...</div>;
+  if (loading) return <div className="text-right text-xs text-gray-400 dark:text-gray-500 mt-2">...</div>;
 
   return (
-    <div className="mt-3 pt-2 border-t border-gray-200 dark:border-dark-border">
-      {/* Comments list */}
+    <div className="mt-3 pt-2 border-t border-gray-100 dark:border-dark-border">
       <div className="space-y-2">
         {comments.map(comment => (
           <div key={comment.id} className="bg-gray-50 dark:bg-dark-surface p-3 rounded-lg">
@@ -1908,12 +1953,12 @@ const ReviewComments = ({ reviewId }) => {
                   {comment.user_display_name}
                 </span>
                 {comment.is_staff_response && (
-                  <span className="mr-2 text-xs bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full">
+                  <span className="mr-2 text-xs bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full">
                     پاسخ کارشناس
                   </span>
                 )}
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
                 {new Date(comment.created_at).toLocaleDateString('fa-IR')}
               </span>
             </div>
@@ -1922,11 +1967,10 @@ const ReviewComments = ({ reviewId }) => {
         ))}
       </div>
 
-      {/* Reply button / form */}
       {!showForm ? (
         <button
           onClick={() => setShowForm(true)}
-          className="text-primary-600 dark:text-primary-400 text-xs mt-2 hover:underline focus:outline-none"
+          className="text-primary-600 dark:text-primary-400 text-xs mt-2 hover:underline focus:outline-none transition"
         >
           + پاسخ
         </button>
@@ -1937,20 +1981,20 @@ const ReviewComments = ({ reviewId }) => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="نظر خود را بنویسید..."
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 text-sm bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+            className="input-field text-sm"
           />
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={submitting}
-              className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1 rounded-md text-sm transition disabled:opacity-50"
+              className="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-md text-sm transition disabled:opacity-50"
             >
               {submitting ? 'در حال ارسال...' : 'ارسال'}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm transition"
+              className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded-md text-sm transition"
             >
               انصراف
             </button>
@@ -1967,8 +2011,8 @@ export default ReviewComments;
 
 ================================================================================
 FILE: src\components\ReviewForm.js
-SIZE: 4,264 bytes
-MODIFIED: 2026-05-08 18:30:49.944614
+SIZE: 3,822 bytes
+MODIFIED: 2026-05-20 01:23:01.819219
 ================================================================================
 
 import React, { useState } from 'react';
@@ -2005,10 +2049,8 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
       if (onSuccess) onSuccess();
       setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
-      // Extract error message from backend response
       let errorMessage = 'خطا در ثبت نظر';
       if (err.data) {
-        // Check for non_field_errors first
         if (err.data.non_field_errors && err.data.non_field_errors.length) {
           errorMessage = err.data.non_field_errors.join('\n');
         } else if (err.data.product) {
@@ -2032,8 +2074,8 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
   };
 
   return (
-    <div className="mt-8 border-t pt-6">
-      <h3 className="text-xl font-semibold mb-4">ثبت نظر جدید</h3>
+    <div className="mt-8 border-t border-gray-200 dark:border-dark-border pt-6">
+      <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">ثبت نظر جدید</h3>
       {error && (
         <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4 whitespace-pre-wrap">
           {error}
@@ -2055,7 +2097,7 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
             placeholder="عنوان نظر"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="input-field"
             required
           />
         </div>
@@ -2065,7 +2107,7 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
             placeholder="متن نظر خود را بنویسید..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="input-field"
             required
           />
         </div>
@@ -2073,7 +2115,7 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
           <button
             type="submit"
             disabled={submitting}
-            className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50 transition"
+            className="btn-primary disabled:opacity-50"
           >
             {submitting ? 'در حال ثبت...' : 'ثبت نظر'}
           </button>
@@ -2088,8 +2130,8 @@ export default ReviewForm;
 
 ================================================================================
 FILE: src\components\ReviewList.js
-SIZE: 3,997 bytes
-MODIFIED: 2026-05-08 19:06:37.401313
+SIZE: 4,478 bytes
+MODIFIED: 2026-05-20 01:22:20.712599
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -2137,8 +2179,8 @@ const ReviewList = ({ productId }) => {
     }
   };
 
-  if (loading) return <div className="text-center py-4">در حال بارگذاری نظرات...</div>;
-  if (error) return <div className="text-center py-4 text-red-600">{error}</div>;
+  if (loading) return <div className="text-center py-4 text-gray-600 dark:text-gray-400">در حال بارگذاری نظرات...</div>;
+  if (error) return <div className="text-center py-4 text-red-600 dark:text-red-400">{error}</div>;
   if (reviews.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -2150,17 +2192,17 @@ const ReviewList = ({ productId }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">نظرات کاربران ({totalCount})</h3>
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">نظرات کاربران ({totalCount})</h3>
       </div>
       <div className="space-y-6">
         {reviews.map(review => (
-          <div key={review.id} className="border-b pb-4 last:border-0">
+          <div key={review.id} className="border-b border-gray-200 dark:border-dark-border pb-4 last:border-0">
             <div className="flex justify-between items-start">
               <div>
                 <RatingStars rating={review.rating} size="small" />
-                <h4 className="font-semibold mt-1">{review.title}</h4>
+                <h4 className="font-semibold mt-1 text-gray-800 dark:text-white">{review.title}</h4>
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {review.user_display_name} • {new Date(review.created_at).toLocaleDateString('fa-IR')}
               </div>
             </div>
@@ -2168,13 +2210,13 @@ const ReviewList = ({ productId }) => {
             <div className="flex items-center gap-4 mt-2 text-sm">
               <button
                 onClick={() => handleVote(review.id, 'helpful')}
-                className="flex items-center gap-1 text-green-600 hover:text-green-800"
+                className="flex items-center gap-1 text-primary-600 hover:text-primary-700 transition"
               >
                 👍 {review.helpful_votes}
               </button>
               <button
                 onClick={() => handleVote(review.id, 'unhelpful')}
-                className="flex items-center gap-1 text-red-600 hover:text-red-800"
+                className="flex items-center gap-1 text-red-500 hover:text-red-600 transition"
               >
                 👎 {review.unhelpful_votes}
               </button>
@@ -2185,9 +2227,9 @@ const ReviewList = ({ productId }) => {
       </div>
       {(nextPage || prevPage) && (
         <div className="flex justify-center gap-2 mt-6">
-          <button onClick={() => fetchReviews(page - 1)} disabled={!prevPage} className="px-3 py-1 border rounded disabled:opacity-50">قبلی</button>
-          <span className="px-3 py-1">صفحه {page}</span>
-          <button onClick={() => fetchReviews(page + 1)} disabled={!nextPage} className="px-3 py-1 border rounded disabled:opacity-50">بعدی</button>
+          <button onClick={() => fetchReviews(page - 1)} disabled={!prevPage} className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg transition">قبلی</button>
+          <span className="px-3 py-1 text-gray-700 dark:text-gray-300">صفحه {page}</span>
+          <button onClick={() => fetchReviews(page + 1)} disabled={!nextPage} className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg transition">بعدی</button>
         </div>
       )}
     </div>
@@ -2195,6 +2237,204 @@ const ReviewList = ({ productId }) => {
 };
 
 export default ReviewList;
+      📄 src\components\SMSLogin.js
+
+================================================================================
+FILE: src\components\SMSLogin.js
+SIZE: 5,468 bytes
+MODIFIED: 2026-05-20 23:31:44.713177
+================================================================================
+
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import apiClient from '../api/client';
+
+const SMSLogin = () => {
+  const [step, setStep] = useState('phone');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const requestOTP = async (e) => {
+    e.preventDefault();
+    if (!phone.match(/^09[0-9]{9}$/)) {
+      setError('شماره موبایل نامعتبر است');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      await apiClient.post('/accounts/auth/request-otp/', { phone_number: phone });
+      setStep('otp');
+    } catch (err) {
+      setError(err.response?.data?.error || 'ارسال کد تایید با خطا مواجه شد');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOTP = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const response = await apiClient.post('/accounts/auth/verify-otp/', {
+        phone_number: phone,
+        code: otp,
+      });
+      console.log('Login response:', response.data);
+      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      console.log('Tokens stored, reloading page...');
+      // Force a full page reload (not React Router navigation)
+      window.location.href = '/';
+    } catch (err) {
+      setError(err.response?.data?.error || 'کد تایید نامعتبر است');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
+      <div className="w-full max-w-md">
+        <div className="card p-8">
+          {step === 'phone' ? (
+            <form onSubmit={requestOTP}>
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">ورود با شماره موبایل</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">کد تایید به شماره شما ارسال می‌شود</p>
+              </div>
+
+              {error && (
+                <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-6">
+                  {error}
+                </div>
+              )}
+
+              <div className="mb-6">
+                <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">شماره موبایل</label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="09xxxxxxxxx"
+                  className="input-field"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full disabled:opacity-50"
+              >
+                {loading ? 'در حال ارسال...' : 'ارسال کد تایید'}
+              </button>
+
+              <div className="mt-6 text-center">
+                <Link to="/login" className="text-primary-600 dark:text-primary-400 hover:underline">
+                  ورود با رمز عبور
+                </Link>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={verifyOTP}>
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">کد تایید</h1>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
+                  کد ۶ رقمی به شماره {phone} ارسال شد
+                </p>
+              </div>
+
+              {error && (
+                <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-6">
+                  {error}
+                </div>
+              )}
+
+              <div className="mb-6">
+                <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">کد تایید</label>
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="123456"
+                  className="input-field"
+                  required
+                  maxLength="6"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full disabled:opacity-50"
+              >
+                {loading ? 'در حال بررسی...' : 'ورود'}
+              </button>
+
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={() => setStep('phone')}
+                  className="text-primary-600 dark:text-primary-400 hover:underline text-sm"
+                >
+                  تغییر شماره موبایل
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SMSLogin;
+      📄 src\components\ScrollToTop.js
+
+================================================================================
+FILE: src\components\ScrollToTop.js
+SIZE: 1,095 bytes
+MODIFIED: 2026-05-20 01:18:34.801719
+================================================================================
+
+import React, { useState, useEffect } from 'react';
+
+const ScrollToTopButton = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      setIsVisible(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <button
+      onClick={scrollToTop}
+      className="fixed bottom-6 right-6 bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-full shadow-soft hover:shadow-hover transition-all duration-300 z-50 focus:outline-none"
+      aria-label="بازگشت به بالا"
+    >
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+  );
+};
+
+export default ScrollToTopButton;
       📄 src\components\ScrollToTopButton.js
 
 ================================================================================
@@ -2240,8 +2480,8 @@ export default ScrollToTopButton;
 
 ================================================================================
 FILE: src\components\ThemeToggle.js
-SIZE: 1,138 bytes
-MODIFIED: 2026-05-06 01:29:03.276692
+SIZE: 1,200 bytes
+MODIFIED: 2026-05-20 01:25:16.367213
 ================================================================================
 
 import React from 'react';
@@ -2253,7 +2493,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className="p-2 rounded-full bg-gray-100 dark:bg-dark-surface text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-dark-border transition"
+      className="p-2 rounded-full bg-gray-100 dark:bg-dark-surface text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-border transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400"
       aria-label="Toggle dark mode"
     >
       {darkMode ? (
@@ -2311,8 +2551,8 @@ export const useTheme = () => useContext(ThemeContext);
 
 ================================================================================
 FILE: src\hooks\useAuth.js
-SIZE: 1,924 bytes
-MODIFIED: 2025-08-14 18:04:19.635176
+SIZE: 2,250 bytes
+MODIFIED: 2026-05-20 23:34:48.879322
 ================================================================================
 
 import { useState, useEffect, useContext, createContext } from 'react';
@@ -2321,28 +2561,15 @@ import AuthService from '../services/AuthService';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Read user from localStorage immediately
+  const storedUser = localStorage.getItem('user');
+  const initialUser = storedUser ? JSON.parse(storedUser) : null;
+  const [user, setUser] = useState(initialUser);
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!initialUser);
 
-  useEffect(() => {
-    initializeAuth();
-  }, []);
-
-  const initializeAuth = async () => {
-    try {
-      if (AuthService.isAuthenticated()) {
-        const userData = await AuthService.getCurrentUser();
-        setUser(userData);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error('Auth initialization error:', error);
-      AuthService.logout();
-    } finally {
-      setLoading(false);
-    }
-  };
+  // No async verification on mount – just trust localStorage
+  // (The token will be validated by API calls when needed)
 
   const login = async (credentials) => {
     try {
@@ -2358,10 +2585,14 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await AuthService.logout();
-      setUser(null);
-      setIsAuthenticated(false);
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
     }
   };
 
@@ -2374,6 +2605,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshUser = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      setIsAuthenticated(true);
+    } else {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -2381,6 +2624,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     register,
+    refreshUser,
   };
 
   return (
@@ -2716,8 +2960,8 @@ reportWebVitals();
 
 ================================================================================
 FILE: src\pages\BlogDetail.js
-SIZE: 2,370 bytes
-MODIFIED: 2026-05-19 00:37:41.648209
+SIZE: 2,417 bytes
+MODIFIED: 2026-05-20 00:53:40.668034
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -2755,24 +2999,26 @@ const BlogDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8" dir="rtl">
       <div className="mb-6">
-        <Link to="/blog" className="text-primary-600 dark:text-primary-400 hover:underline">
+        <Link to="/blog" className="text-primary-600 dark:text-primary-400 hover:underline transition">
           ← بازگشت به لیست مقالات
         </Link>
       </div>
-      <div className="bg-white dark:bg-dark-surface rounded-xl shadow-md p-6 border border-gray-100 dark:border-dark-border">
-        <div className="text-sm text-primary-600 dark:text-primary-400 mb-2">{post.category?.name}</div>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{post.title}</h1>
-        <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 mb-6">
-          <span>نویسنده: {post.author_name || 'مدیریت'}</span>
-          <span>{new Date(post.published_at).toLocaleDateString('fa-IR')}</span>
-        </div>
-        {post.featured_image && (
-          <img src={post.featured_image} alt={post.title} className="w-full rounded-xl mb-6 max-h-96 object-cover" />
-        )}
-        <div className="prose dark:prose-invert max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-            {post.content}
-          </ReactMarkdown>
+      <div className="card bg-white dark:bg-dark-surface overflow-hidden">
+        <div className="p-6">
+          <div className="text-sm text-primary-600 dark:text-primary-400 mb-2">{post.category?.name}</div>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{post.title}</h1>
+          <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 mb-6">
+            <span>نویسنده: {post.author_name || 'مدیریت'}</span>
+            <span>{new Date(post.published_at).toLocaleDateString('fa-IR')}</span>
+          </div>
+          {post.featured_image && (
+            <img src={post.featured_image} alt={post.title} className="w-full rounded-xl mb-6 max-h-96 object-cover shadow-soft" />
+          )}
+          <div className="prose dark:prose-invert max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+              {post.content}
+            </ReactMarkdown>
+          </div>
         </div>
       </div>
     </div>
@@ -2784,14 +3030,13 @@ export default BlogDetail;
 
 ================================================================================
 FILE: src\pages\BlogList.js
-SIZE: 2,461 bytes
-MODIFIED: 2026-05-06 03:00:13.187300
+SIZE: 2,417 bytes
+MODIFIED: 2026-05-20 00:52:44.540435
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import BlogService from '../api/BlogService';
-import { formatDate } from '../utils/format'; // optional
 
 const BlogList = () => {
   const [posts, setPosts] = useState([]);
@@ -2822,7 +3067,7 @@ const BlogList = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map(post => (
           <Link key={post.id} to={`/blog/${post.slug}`} className="group">
-            <div className="bg-white dark:bg-dark-surface rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition border border-gray-100 dark:border-dark-border">
+            <div className="card bg-white dark:bg-dark-surface overflow-hidden transition-all duration-300">
               <div className="h-56 overflow-hidden">
                 <img 
                   src={post.featured_image || '/placeholder-blog.jpg'} 
@@ -2832,7 +3077,9 @@ const BlogList = () => {
               </div>
               <div className="p-4">
                 <div className="text-sm text-primary-600 dark:text-primary-400 mb-1">{post.category_name}</div>
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{post.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2 group-hover:text-primary-600 transition">
+                  {post.title}
+                </h2>
                 <p className="text-gray-600 dark:text-gray-400 line-clamp-3">{post.summary}</p>
                 <div className="mt-3 text-sm text-gray-500 dark:text-gray-500">
                   {new Date(post.published_at).toLocaleDateString('fa-IR')}
@@ -2851,8 +3098,8 @@ export default BlogList;
 
 ================================================================================
 FILE: src\pages\Cart.js
-SIZE: 9,050 bytes
-MODIFIED: 2026-05-09 17:12:29.066537
+SIZE: 8,361 bytes
+MODIFIED: 2026-05-20 00:54:29.994924
 ================================================================================
 
 import React, { useState } from 'react';
@@ -2869,7 +3116,6 @@ const Cart = () => {
   const [couponSuccess, setCouponSuccess] = useState('');
   const [applyingCoupon, setApplyingCoupon] = useState(false);
 
-  // Helper to get product image from product_details
   const getProductImage = (productDetails) => {
     if (productDetails?.primary_image) return productDetails.primary_image;
     if (productDetails?.image) return productDetails.image;
@@ -2899,9 +3145,7 @@ const Cart = () => {
     return (
       <div className="cart-page container mx-auto px-4 py-8 text-center">
         <p className="text-xl mb-4 text-gray-700 dark:text-gray-300">لطفا ابتدا وارد حساب کاربری خود شوید</p>
-        <Link to="/login" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
-          ورود به حساب
-        </Link>
+        <Link to="/login" className="btn-primary inline-block">ورود به حساب</Link>
       </div>
     );
   }
@@ -2912,9 +3156,7 @@ const Cart = () => {
     return (
       <div className="cart-page container mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">سبد خرید خالی است</h1>
-        <Link to="/products" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
-          مشاهده محصولات
-        </Link>
+        <Link to="/products" className="btn-primary inline-block">مشاهده محصولات</Link>
       </div>
     );
   }
@@ -2936,7 +3178,7 @@ const Cart = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Cart Items */}
         <div className="lg:w-2/3">
-          <div className="bg-white dark:bg-dark-surface rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-dark-border">
+          <div className="card bg-white dark:bg-dark-surface overflow-hidden">
             {cart.items.map((item) => (
               <div key={item.id} className="border-b border-gray-100 dark:border-dark-border p-4 flex flex-col sm:flex-row gap-4">
                 <img
@@ -2952,27 +3194,27 @@ const Cart = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleQuantityChange(item, item.quantity - 1)}
-                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg text-gray-700 dark:text-gray-300"
+                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg"
                     >
                       -
                     </button>
                     <span className="w-12 text-center text-gray-800 dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => handleQuantityChange(item, item.quantity + 1)}
-                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg text-gray-700 dark:text-gray-300"
+                      className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg"
                     >
                       +
                     </button>
                     <button
                       onClick={() => removeItem({ item_id: item.id })}
-                      className="ml-4 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      className="ml-4 text-red-600 hover:text-red-700"
                     >
                       حذف
                     </button>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-800 dark:text-white">
+                  <p className="font-semibold text-primary-600 dark:text-primary-400">
                     {formatPrice(item.unit_price * item.quantity)}
                   </p>
                 </div>
@@ -2981,7 +3223,7 @@ const Cart = () => {
           </div>
           <button
             onClick={clearCart}
-            className="mt-4 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition"
+            className="mt-4 text-red-600 hover:text-red-700 transition"
           >
             حذف همه موارد
           </button>
@@ -2989,7 +3231,7 @@ const Cart = () => {
 
         {/* Order Summary */}
         <div className="lg:w-1/3">
-          <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 border border-gray-200 dark:border-dark-border sticky top-20">
+          <div className="card bg-gray-50 dark:bg-dark-surface p-6 sticky top-20">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">خلاصه سفارش</h2>
             <div className="space-y-2">
               <div className="flex justify-between text-gray-700 dark:text-gray-300">
@@ -3023,13 +3265,13 @@ const Cart = () => {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   placeholder="کد تخفیف خود را وارد کنید"
-                  className="flex-1 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field flex-1"
                   disabled={applyingCoupon}
                 />
                 <button
                   onClick={handleApplyCoupon}
                   disabled={applyingCoupon || !couponCode.trim()}
-                  className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50"
+                  className="btn-primary !py-2 !px-4 disabled:opacity-50"
                 >
                   {applyingCoupon ? 'در حال بررسی...' : 'اعمال'}
                 </button>
@@ -3040,7 +3282,7 @@ const Cart = () => {
 
             <Link
               to="/checkout"
-              className="block w-full bg-primary-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-primary-700 transition mt-6"
+              className="block w-full btn-primary text-center mt-6"
             >
               ادامه فرآیند خرید
             </Link>
@@ -3056,8 +3298,8 @@ export default Cart;
 
 ================================================================================
 FILE: src\pages\ForgotPassword.js
-SIZE: 4,680 bytes
-MODIFIED: 2026-05-08 23:55:05.808132
+SIZE: 4,352 bytes
+MODIFIED: 2026-05-20 01:01:21.708062
 ================================================================================
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -3123,7 +3365,7 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">بازیابی رمز عبور</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
@@ -3150,7 +3392,7 @@ const ForgotPassword = () => {
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="ایمیل یا نام کاربری خود را وارد کنید"
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                className="input-field"
                 required
               />
             </div>
@@ -3158,7 +3400,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading || cooldownRemaining > 0}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 shadow-md"
+              className="btn-primary w-full disabled:opacity-50"
             >
               {loading ? 'در حال ارسال...' : (cooldownRemaining > 0 ? `صبر کنید (${cooldownRemaining} ثانیه)` : 'ارسال لینک بازیابی')}
             </button>
@@ -3180,8 +3422,8 @@ export default ForgotPassword;
 
 ================================================================================
 FILE: src\pages\Home.js
-SIZE: 17,877 bytes
-MODIFIED: 2026-05-18 23:34:04.250149
+SIZE: 19,622 bytes
+MODIFIED: 2026-05-20 01:20:08.098281
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -3192,6 +3434,9 @@ import { useProducts, useCategories } from '../hooks/useProducts';
 import { formatPrice } from '../utils/format';
 import BlogService from '../api/BlogService';
 import DiscountBadge from '../components/DiscountBadge';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -3264,7 +3509,7 @@ const Home = () => {
                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center text-white p-4">
                   <h2 className="text-3xl md:text-5xl font-bold mb-2">{slide.title}</h2>
                   <p className="text-lg md:text-2xl mb-6">{slide.subtitle}</p>
-                  <Link to={slide.link} className="bg-primary-600 hover:bg-primary-700 px-6 py-3 rounded-full font-semibold transition shadow-lg">
+                  <Link to={slide.link} className="btn-primary">
                     مشاهده محصولات
                   </Link>
                 </div>
@@ -3275,55 +3520,57 @@ const Home = () => {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-16 bg-white dark:bg-dark-bg">
+      <section className="py-12 bg-white dark:bg-dark-bg">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">چرا داروخانه دکتر نقی پور؟</h2>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">چرا داروخانه دکتر نقی پور؟</h2>
             <div className="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { icon: 'M5 13l4 4L19 7', title: 'محصولات اصل و تضمینی', desc: 'تمامی محصولات دارای ضمانت اصالت و سلامت' },
               { icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', title: 'ارسال سریع و مطمئن', desc: 'تحویل سفارش در کوتاه‌ترین زمان ممکن' },
               { icon: 'M3 10h18M7 15h10M9 5h6', title: 'قیمت رقابتی', desc: 'بهترین قیمت‌ها در مقایسه با بازار' },
               { icon: 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z', title: 'مشاوره رایگان', desc: 'تیم داروسازان آماده پاسخگویی' }
             ].map((item, idx) => (
-              <div key={idx} className="text-center p-6 rounded-2xl bg-gray-50 dark:bg-dark-surface border border-gray-100 dark:border-dark-border">
-                <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div key={idx} className="text-center p-4 rounded-2xl bg-gray-50 dark:bg-dark-surface border border-gray-100 dark:border-dark-border">
+                <div className="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-7 h-7 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">{item.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{item.desc}</p>
+                <h3 className="text-base font-semibold mb-1 text-gray-800 dark:text-white">{item.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Category Grid – white background */}
-      <section className="py-16 bg-white dark:bg-dark-bg">
+      {/* Category Grid - 70x70 images */}
+      <section className="py-8 bg-white dark:bg-dark-bg">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">دسته‌بندی محصولات</h2>
-            <div className="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
+          <div className="text-center mb-6">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-1">دسته‌بندی محصولات</h2>
+            <div className="w-12 h-0.5 bg-primary-500 mx-auto rounded-full"></div>
           </div>
           {categoriesLoading ? (
-            <div className="flex justify-center py-12"><div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div></div>
+            <div className="flex justify-center py-6"><div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div></div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {categories?.slice(0, 6).map((category) => (
                 <Link key={category.id} to={`/category/${category.slug}`} className="group block text-center">
-                  <div className="bg-gray-50 dark:bg-dark-surface rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all p-4">
-                    <div className="w-full h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
-                      <img 
-                        src={getCategoryImage(category)} 
-                        alt={category.name} 
-                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" 
-                      />
+                  <div className="bg-gray-50 dark:bg-dark-surface rounded-lg overflow-hidden shadow-sm hover:shadow transition-all p-2">
+                    <div className="flex justify-center">
+                      <div className="w-[70px] h-[70px] flex items-center justify-center bg-transparent rounded-md">
+                        <img 
+                          src={getCategoryImage(category)} 
+                          alt={category.name} 
+                          className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" 
+                        />
+                      </div>
                     </div>
-                    <h3 className="mt-3 font-semibold text-gray-800 dark:text-white">{category.name}</h3>
+                    <h3 className="mt-1 text-[0.7rem] font-medium text-gray-800 dark:text-white truncate">{category.name}</h3>
                   </div>
                 </Link>
               ))}
@@ -3332,35 +3579,43 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Best Sellers – gray background */}
-      <section className="py-16 bg-gray-50 dark:bg-dark-surface">
+      {/* Best Sellers - with card class */}
+      <section className="py-12 bg-gray-50 dark:bg-dark-surface">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">پرفروش‌ترین محصولات</h2>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">پرفروش‌ترین محصولات</h2>
             <div className="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products?.slice(4, 8).map((product) => (
-              <div key={product.id} className="group bg-white dark:bg-dark-bg rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100 dark:border-dark-border">
+              <div key={product.id} className="group card bg-white dark:bg-dark-surface">
                 <Link to={`/products/${product.slug}`}>
-                  <div className="relative overflow-hidden h-56">
-                    <img src={product.primary_image || '/placeholder.jpg'} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                    <DiscountBadge percentage={product.discount_percentage} />
-                    {!product.in_stock && <span className="absolute top-2 left-2 bg-gray-700 text-white text-xs px-2 py-1 rounded-full">ناموجود</span>}
+                  <div className="flex justify-center pt-4">
+                    <div className="relative w-32 h-32 overflow-hidden rounded-lg">
+                      <img
+                        src={product.primary_image || '/placeholder.jpg'}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      />
+                      <DiscountBadge percentage={product.discount_percentage} />
+                      {!product.in_stock && (
+                        <span className="absolute top-1 left-1 bg-gray-700 text-white text-xs px-1.5 py-0.5 rounded-full">ناموجود</span>
+                      )}
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2 line-clamp-1">{product.name}</h3>
-                    <div className="flex items-center gap-2 flex-wrap mt-2">
-                      <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">
+                  <div className="p-3 text-center">
+                    <h3 className="font-semibold text-sm text-gray-800 dark:text-white mb-1 line-clamp-2">{product.name}</h3>
+                    <div className="flex items-center justify-center gap-2 flex-wrap mt-1">
+                      <span className="text-primary-600 dark:text-primary-400 font-bold text-base">
                         {formatPrice(product.price)}
                       </span>
                       {product.compare_price && (
-                        <span className="text-gray-400 line-through text-sm">
+                        <span className="text-gray-400 line-through text-xs">
                           {formatPrice(product.compare_price)}
                         </span>
                       )}
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {product.manufacturer_name || 'نامشخص'}
                     </div>
                   </div>
@@ -3371,11 +3626,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Products – white background */}
-      <section className="py-16 bg-white dark:bg-dark-bg">
+      {/* Featured Products - with card class */}
+      <section className="py-12 bg-white dark:bg-dark-bg">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">محصولات ویژه</h2>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">محصولات ویژه</h2>
             <div className="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
           </div>
           {productsLoading ? (
@@ -3383,26 +3638,34 @@ const Home = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {products?.slice(0, 4).map(product => (
-                <div key={product.id} className="group bg-gray-50 dark:bg-dark-surface rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden border border-gray-100 dark:border-dark-border">
+                <div key={product.id} className="group card bg-gray-50 dark:bg-dark-surface">
                   <Link to={`/products/${product.slug}`}>
-                    <div className="relative overflow-hidden h-56">
-                      <img src={product.primary_image || '/placeholder.jpg'} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                      <DiscountBadge percentage={product.discount_percentage} />
-                      {!product.in_stock && <span className="absolute top-2 left-2 bg-gray-700 text-white text-xs px-2 py-1 rounded-full">ناموجود</span>}
+                    <div className="flex justify-center pt-4">
+                      <div className="relative w-32 h-32 overflow-hidden rounded-lg">
+                        <img
+                          src={product.primary_image || '/placeholder.jpg'}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        />
+                        <DiscountBadge percentage={product.discount_percentage} />
+                        {!product.in_stock && (
+                          <span className="absolute top-1 left-1 bg-gray-700 text-white text-xs px-1.5 py-0.5 rounded-full">ناموجود</span>
+                        )}
+                      </div>
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2 line-clamp-1">{product.name}</h3>
-                      <div className="flex items-center gap-2 flex-wrap mt-2">
-                        <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">
+                    <div className="p-3 text-center">
+                      <h3 className="font-semibold text-sm text-gray-800 dark:text-white mb-1 line-clamp-2">{product.name}</h3>
+                      <div className="flex items-center justify-center gap-2 flex-wrap mt-1">
+                        <span className="text-primary-600 dark:text-primary-400 font-bold text-base">
                           {formatPrice(product.price)}
                         </span>
                         {product.compare_price && (
-                          <span className="text-gray-400 line-through text-sm">
+                          <span className="text-gray-400 line-through text-xs">
                             {formatPrice(product.compare_price)}
                           </span>
                         )}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {product.manufacturer_name || 'نامشخص'}
                       </div>
                     </div>
@@ -3411,10 +3674,10 @@ const Home = () => {
               ))}
             </div>
           )}
-          <div className="text-center mt-12">
-            <Link to="/products" className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition">
+          <div className="text-center mt-10">
+            <Link to="/products" className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:gap-3 transition text-sm">
               مشاهده همه محصولات
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
@@ -3422,13 +3685,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Health Tips – Blog Section (gray background) */}
-      <section className="py-16 bg-gray-50 dark:bg-dark-surface">
+      {/* Blog Section */}
+      <section className="py-12 bg-gray-50 dark:bg-dark-surface">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">مجله سلامت</h2>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">مجله سلامت</h2>
             <div className="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
-            <p className="text-gray-600 dark:text-gray-400 mt-4">نکات و مقالات تخصصی</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm">نکات و مقالات تخصصی</p>
           </div>
           {tipsLoading ? (
             <div className="flex justify-center py-12">
@@ -3440,7 +3703,7 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {latestPosts.map(post => (
                 <Link key={post.id} to={`/blog/${post.slug}`} className="group">
-                  <div className="bg-white dark:bg-dark-bg rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition">
+                  <div className="bg-white dark:bg-dark-bg rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                     <div className="h-48 bg-primary-200 dark:bg-primary-900/50 flex items-center justify-center">
                       <img 
                         src={post.featured_image || '/placeholder-blog.jpg'} 
@@ -3448,10 +3711,25 @@ const Home = () => {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="p-4">
-                      <div className="text-sm text-primary-600 dark:text-primary-400 mb-1">{post.category_name}</div>
-                      <h3 className="text-lg font-semibold text-gray-800 dark:text-white group-hover:text-primary-600 transition">{post.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{post.summary}</p>
+                    <div className="p-3">
+                      <div className="text-xs text-primary-600 dark:text-primary-400 mb-1">{post.category_name}</div>
+                      <h3 className="text-base font-semibold text-gray-800 dark:text-white group-hover:text-primary-600 transition line-clamp-1">{post.title}</h3>
+                      <div className="text-gray-600 dark:text-gray-400 mt-1 line-clamp-2 text-xs">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeRaw]}
+                          components={{
+                            p: ({ node, ...props }) => <p style={{ fontSize: '0.65rem', lineHeight: '1.3', margin: 0 }} {...props} />,
+                            h1: ({ node, ...props }) => <p style={{ fontSize: '0.65rem', lineHeight: '1.3', margin: 0, fontWeight: 'normal' }} {...props} />,
+                            h2: ({ node, ...props }) => <p style={{ fontSize: '0.65rem', lineHeight: '1.3', margin: 0, fontWeight: 'normal' }} {...props} />,
+                            h3: ({ node, ...props }) => <p style={{ fontSize: '0.65rem', lineHeight: '1.3', margin: 0, fontWeight: 'normal' }} {...props} />,
+                            strong: ({ node, ...props }) => <strong style={{ fontWeight: '600' }} {...props} />,
+                            a: ({ node, ...props }) => <a style={{ color: '#3b82f6' }} {...props} />
+                          }}
+                        >
+                          {post.summary || ''}
+                        </ReactMarkdown>
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -3459,46 +3737,47 @@ const Home = () => {
             </div>
           )}
           <div className="text-center mt-8">
-            <Link to="/blog" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline">
+            <Link to="/blog" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline text-sm">
               مشاهده همه مقالات →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Newsletter & Trust Badges */}
-      <section className="py-12 bg-primary-600 dark:bg-primary-800">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex flex-wrap justify-center gap-8 mb-8">
-            <div className="flex items-center gap-2 text-white">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <span>پرداخت امن</span>
-            </div>
-            <div className="flex items-center gap-2 text-white">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              <span>ضمانت اصالت کالا</span>
-            </div>
-            <div className="flex items-center gap-2 text-white">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span>ارسال به سراسر ایران</span>
-            </div>
-          </div>
-          <h3 className="text-2xl text-white font-bold mb-3">عضویت در خبرنامه</h3>
-          <p className="text-primary-100 mb-6">از تخفیف‌ها و محصولات جدید با خبر شوید</p>
-          <div className="max-w-md mx-auto flex gap-2">
-            <input type="email" placeholder="ایمیل خود را وارد کنید" className="flex-1 rounded-full px-4 py-2 text-gray-900" />
-            <button className="bg-white text-primary-600 px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition">
-              ثبت
-            </button>
-          </div>
+  {/* Newsletter - with bottom padding to separate from footer */}
+  <section className="pt-10 pb-8 bg-primary-500 dark:bg-primary-700">
+    <div className="container mx-auto px-4 text-center">
+      <div className="flex flex-wrap justify-center gap-6 mb-6">
+        {/* trust badges unchanged */}
+        <div className="flex items-center gap-2 text-white text-sm">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span>پرداخت امن</span>
         </div>
-      </section>
+        <div className="flex items-center gap-2 text-white text-sm">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <span>ضمانت اصالت کالا</span>
+        </div>
+        <div className="flex items-center gap-2 text-white text-sm">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>ارسال به سراسر ایران</span>
+        </div>
+      </div>
+      <h3 className="text-xl text-white font-bold mb-2">عضویت در خبرنامه</h3>
+      <p className="text-primary-100 mb-5 text-sm">از تخفیف‌ها و محصولات جدید با خبر شوید</p>
+      <div className="max-w-md mx-auto flex gap-2">
+        <input type="email" placeholder="ایمیل خود را وارد کنید" className="flex-1 rounded-full px-4 py-2 text-gray-900 text-sm" />
+        <button className="bg-white text-primary-600 px-5 py-2 rounded-full font-semibold hover:bg-gray-100 transition text-sm">
+          ثبت
+        </button>
+      </div>
+    </div>
+  </section>
     </div>
   );
 };
@@ -3508,36 +3787,75 @@ export default Home;
 
 ================================================================================
 FILE: src\pages\Login.js
-SIZE: 4,389 bytes
-MODIFIED: 2026-05-08 19:39:36.543305
+SIZE: 10,260 bytes
+MODIFIED: 2026-05-20 02:09:52.528059
 ================================================================================
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import apiClient from '../api/client';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
+  const [method, setMethod] = useState('phone'); // 'phone' or 'password'
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState('phone'); // 'phone' or 'otp'
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  // ---------- SMS OTP ----------
+  const requestOTP = async (e) => {
+    e.preventDefault();
+    if (!phone.match(/^09[0-9]{9}$/)) {
+      setError('شماره موبایل نامعتبر است');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      await apiClient.post('/accounts/auth/request-otp/', { phone_number: phone });
+      setStep('otp');
+    } catch (err) {
+      setError(err.response?.data?.error || 'ارسال کد تایید با خطا مواجه شد');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const verifyOTP = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const response = await apiClient.post('/accounts/auth/verify-otp/', {
+        phone_number: phone,
+        code: otp,
+      });
+      // Save tokens exactly as your password login does
+      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.error || 'کد تایید نامعتبر است');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ---------- Username/Password ----------
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmitPassword = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
       await login(formData);
       navigate('/');
@@ -3553,69 +3871,192 @@ const Login = () => {
     }
   };
 
+  // Reset method switch
+  const switchMethod = (newMethod) => {
+    setMethod(newMethod);
+    setError('');
+    setStep('phone');
+    setPhone('');
+    setOtp('');
+    setFormData({ username: '', password: '' });
+  };
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-dark-border">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">ورود به حساب کاربری</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">به داروخانه دکتر نقی پور خوش آمدید</p>
+        <div className="card p-8">
+          {/* Method Toggle */}
+          <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-dark-border">
+            <button
+              onClick={() => switchMethod('phone')}
+              className={`flex-1 pb-2 text-center font-medium transition ${
+                method === 'phone'
+                  ? 'text-primary-600 border-b-2 border-primary-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              ورود با شماره موبایل
+            </button>
+            <button
+              onClick={() => switchMethod('password')}
+              className={`flex-1 pb-2 text-center font-medium transition ${
+                method === 'password'
+                  ? 'text-primary-600 border-b-2 border-primary-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              ورود با نام کاربری
+            </button>
           </div>
 
-          {error && (
-            <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-6 whitespace-pre-wrap">
-              {error}
-            </div>
+          {method === 'phone' ? (
+            // ---------- Phone Login ----------
+            step === 'phone' ? (
+              <form onSubmit={requestOTP}>
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">ورود با شماره موبایل</h2>
+                  <p className="text-gray-500 text-sm mt-1">کد تایید برای شما ارسال می‌شود</p>
+                </div>
+
+                {error && (
+                  <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4">
+                    {error}
+                  </div>
+                )}
+
+                <div className="mb-5">
+                  <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">شماره موبایل</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="09xxxxxxxxx"
+                    className="input-field"
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary w-full disabled:opacity-50"
+                >
+                  {loading ? 'در حال ارسال...' : 'ارسال کد تایید'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={verifyOTP}>
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">کد تایید</h2>
+                  <p className="text-gray-500 text-sm mt-1">
+                    کد ۶ رقمی به شماره {phone} ارسال شد
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4">
+                    {error}
+                  </div>
+                )}
+
+                <div className="mb-5">
+                  <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">کد تایید</label>
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    className="input-field"
+                    required
+                    maxLength="6"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary w-full disabled:opacity-50"
+                >
+                  {loading ? 'در حال بررسی...' : 'ورود'}
+                </button>
+
+                <div className="mt-3 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setStep('phone')}
+                    className="text-sm text-primary-600 hover:underline"
+                  >
+                    تغییر شماره موبایل
+                  </button>
+                </div>
+              </form>
+            )
+          ) : (
+            // ---------- Username/Password Login ----------
+            <form onSubmit={handleSubmitPassword} autoComplete="on">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">ورود با نام کاربری</h2>
+                <p className="text-gray-500 text-sm mt-1">نام کاربری و رمز عبور خود را وارد کنید</p>
+              </div>
+
+              {error && (
+                <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4 whitespace-pre-wrap">
+                  {error}
+                </div>
+              )}
+
+              <div className="mb-4">
+                <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">نام کاربری</label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  autoComplete="username"
+                  className="input-field"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">رمز عبور</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  autoComplete="current-password"
+                  className="input-field"
+                />
+              </div>
+
+              <div className="text-left mb-4">
+                <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline">
+                  رمز عبور خود را فراموش کرده‌اید؟
+                </Link>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full disabled:opacity-50"
+              >
+                {loading ? 'در حال ورود...' : 'ورود'}
+              </button>
+            </form>
           )}
 
-          <form onSubmit={handleSubmit} autoComplete="on">
-            <div className="mb-5">
-              <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">نام کاربری</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                autoComplete="username"
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
-              />
+          {method === 'password' && (
+            <div className="mt-6 text-center">
+              <p className="text-gray-600 dark:text-gray-400">
+                حساب کاربری ندارید؟{' '}
+                <Link to="/register" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline">
+                  ثبت نام
+                </Link>
+              </p>
             </div>
-
-            <div className="mb-6">
-              <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">رمز عبور</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                autoComplete="current-password"
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
-              />
-            </div>
-            <div className="text-left mt-1">
-              <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline">
-                رمز عبور خود را فراموش کرده‌اید؟
-              </Link>
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
-            >
-              {loading ? 'در حال ورود...' : 'ورود'}
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              حساب کاربری ندارید؟{' '}
-              <Link to="/register" className="text-primary-600 dark:text-primary-400 font-semibold hover:underline">
-                ثبت نام
-              </Link>
-            </p>
-          </div>
+          )}
         </div>
       </div>
     </div>
@@ -3627,8 +4068,8 @@ export default Login;
 
 ================================================================================
 FILE: src\pages\OrderDetail.js
-SIZE: 7,037 bytes
-MODIFIED: 2026-05-06 02:28:20.766756
+SIZE: 6,976 bytes
+MODIFIED: 2026-05-20 00:58:32.859907
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -3697,12 +4138,12 @@ const OrderDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8" dir="rtl">
       <div className="mb-6">
-        <Link to="/orders" className="text-primary-600 dark:text-primary-400 hover:underline">
+        <Link to="/orders" className="text-primary-600 dark:text-primary-400 hover:underline transition">
           ← بازگشت به لیست سفارشات
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-dark-surface rounded-xl shadow-md p-6 border border-gray-200 dark:border-dark-border">
+      <div className="card p-6">
         <div className="flex flex-wrap justify-between items-start gap-4 border-b border-gray-200 dark:border-dark-border pb-4 mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">جزئیات سفارش</h1>
@@ -3752,7 +4193,7 @@ const OrderDetail = () => {
                   <td className="p-2 text-gray-900 dark:text-white">{item.product_name}</td>
                   <td className="p-2 text-gray-900 dark:text-white">{item.quantity}</td>
                   <td className="p-2 text-gray-900 dark:text-white">{formatPrice(item.unit_price)}</td>
-                  <td className="p-2 text-gray-900 dark:text-white">{formatPrice(item.unit_price * item.quantity)}</td>
+                  <td className="p-2 text-primary-600 dark:text-primary-400 font-medium">{formatPrice(item.unit_price * item.quantity)}</td>
                 </tr>
               ))}
             </tbody>
@@ -3787,8 +4228,8 @@ export default OrderDetail;
 
 ================================================================================
 FILE: src\pages\Orders.js
-SIZE: 12,043 bytes
-MODIFIED: 2026-05-06 01:53:32.017271
+SIZE: 11,778 bytes
+MODIFIED: 2026-05-20 00:57:38.942212
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -3916,7 +4357,6 @@ const Orders = () => {
     <div className="orders-page container mx-auto px-4 py-8" dir="rtl">
       <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">سفارشات من</h1>
 
-      {/* Success / Error messages */}
       {success && (
         <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-3 rounded-lg mb-4">
           {success}
@@ -3936,14 +4376,14 @@ const Orders = () => {
             placeholder="جستجوی شماره سفارش..."
             value={searchTerm}
             onChange={handleSearch}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+            className="input-field"
           />
         </div>
         <div className="md:w-64">
           <select
             value={filterStatus}
             onChange={handleStatusFilter}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+            className="w-full border border-gray-200 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
           >
             {statusOptions.map(opt => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -3963,16 +4403,14 @@ const Orders = () => {
               حذف فیلترها
             </button>
           ) : (
-            <Link to="/products" className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition">
-              شروع خرید
-            </Link>
+            <Link to="/products" className="btn-primary inline-block">شروع خرید</Link>
           )}
         </div>
       ) : (
         <>
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white dark:bg-dark-surface rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-dark-border">
+              <div key={order.id} className="card bg-white dark:bg-dark-surface overflow-hidden">
                 <div className="border-b border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-bg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <div>
                     <span className="font-semibold text-gray-700 dark:text-gray-300">شماره سفارش:</span>
@@ -4004,7 +4442,7 @@ const Orders = () => {
                         </div>
                       ))}
                       {order.items.length > 3 && (
-                        <p className="text-gray-500 dark:text-gray-400">و {order.items.length - 3} محصول دیگر...</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm">و {order.items.length - 3} محصول دیگر...</p>
                       )}
                     </div>
                   ) : (
@@ -4046,7 +4484,7 @@ const Orders = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
+                className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg transition"
               >
                 قبلی
               </button>
@@ -4056,7 +4494,7 @@ const Orders = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-bg"
+                className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-bg transition"
               >
                 بعدی
               </button>
@@ -4073,11 +4511,11 @@ export default Orders;
 
 ================================================================================
 FILE: src\pages\ProductDetail.js
-SIZE: 13,114 bytes
-MODIFIED: 2026-05-19 21:26:19.996517
+SIZE: 16,613 bytes
+MODIFIED: 2026-05-20 00:51:28.127316
 ================================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -4089,6 +4527,7 @@ import { formatPrice, formatNumber } from '../utils/format';
 import DiscountBadge from '../components/DiscountBadge';
 import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
+import ProductService from '../api/ProductService';
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -4100,6 +4539,8 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [stockError, setStockError] = useState('');
   const [expanded, setExpanded] = useState(false);
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [similarLoading, setSimilarLoading] = useState(false);
 
   const images = product?.images || [];
   const currentImage = images[currentImageIndex]?.image || null;
@@ -4107,6 +4548,24 @@ const ProductDetail = () => {
   const description = product?.description || '';
   const shouldTruncate = description.length > 500;
   const shortDescription = shouldTruncate ? description.slice(0, 500) + '...' : description;
+
+  useEffect(() => {
+    if (product?.slug) {
+      fetchSimilarProducts();
+    }
+  }, [product]);
+
+  const fetchSimilarProducts = async () => {
+    try {
+      setSimilarLoading(true);
+      const response = await ProductService.getSimilarProducts(product.slug);
+      setSimilarProducts(response.results || response);
+    } catch (error) {
+      console.error('Error fetching similar products:', error);
+    } finally {
+      setSimilarLoading(false);
+    }
+  };
 
   const increaseQuantity = () => {
     if (quantity < maxAllowed) {
@@ -4172,8 +4631,33 @@ const ProductDetail = () => {
   const stockText = isInStock ? 'موجود' : 'ناموجود';
   const stockClass = isInStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
 
+  const firstCategory = product.categories && product.categories.length > 0 ? product.categories[0] : null;
+  const categoryName = firstCategory?.name;
+  const categorySlug = firstCategory?.slug;
+
   return (
     <div className="product-detail container mx-auto px-4 py-8 mb-16 md:mb-0" dir="rtl">
+      {/* Breadcrumb */}
+      <div className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+        <Link to="/" className="hover:text-primary-600 transition">خانه</Link>
+        <span className="mx-2">›</span>
+        <Link to="/products" className="hover:text-primary-600 transition">محصولات</Link>
+        {categoryName && (
+          <>
+            <span className="mx-2">›</span>
+            {categorySlug ? (
+              <Link to={`/category/${categorySlug}`} className="hover:text-primary-600 transition">
+                {categoryName}
+              </Link>
+            ) : (
+              <span className="text-gray-600">{categoryName}</span>
+            )}
+          </>
+        )}
+        <span className="mx-2">›</span>
+        <span className="text-gray-700 dark:text-gray-300 font-medium">{product.name}</span>
+      </div>
+
       <div className="flex flex-col md:flex-row gap-8">
         {/* Image Carousel */}
         <div className="md:w-1/2">
@@ -4181,7 +4665,7 @@ const ProductDetail = () => {
             <img
               src={currentImage || '/placeholder.jpg'}
               alt={product.name}
-              className="absolute top-0 left-0 w-full h-full object-cover rounded-lg shadow-lg"
+              className="absolute top-0 left-0 w-full h-full object-cover rounded-xl shadow-soft"
             />
             {images.length > 1 && (
               <>
@@ -4208,10 +4692,8 @@ const ProductDetail = () => {
         {/* Product Info */}
         <div className="md:w-1/2">
           <DiscountBadge percentage={product.discount_percentage} size="large" />
-
           <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">{product.name}</h1>
 
-          {/* Short description – now as markdown */}
           {product.short_description && (
             <div className="text-gray-600 dark:text-gray-400 mb-4 prose max-w-none">
               <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
@@ -4220,7 +4702,6 @@ const ProductDetail = () => {
             </div>
           )}
 
-          {/* Price, Stock, Quantity, Add-to-Cart */}
           <div className="border-t border-b border-gray-200 dark:border-dark-border py-4 mb-4">
             <div className="flex justify-between mb-2">
               <span className="font-semibold text-gray-700 dark:text-gray-300">قیمت:</span>
@@ -4247,7 +4728,6 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Quantity Selector */}
           {isInStock && (
             <div className="mb-4">
               <label className="block mb-2 text-gray-700 dark:text-gray-300">تعداد:</label>
@@ -4255,7 +4735,7 @@ const ProductDetail = () => {
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
-                  className="w-10 h-10 border border-gray-300 dark:border-dark-border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg disabled:opacity-50 text-gray-700 dark:text-gray-300"
+                  className="w-10 h-10 border border-gray-300 dark:border-dark-border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg disabled:opacity-50"
                 >
                   -
                 </button>
@@ -4263,27 +4743,26 @@ const ProductDetail = () => {
                   type="number"
                   value={quantity}
                   onChange={handleQuantityChange}
-                  className="w-20 text-center border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="w-20 text-center border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg"
                 />
                 <button
                   onClick={increaseQuantity}
                   disabled={quantity >= maxAllowed && maxAllowed > 0}
-                  className="w-10 h-10 border border-gray-300 dark:border-dark-border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg disabled:opacity-50 text-gray-700 dark:text-gray-300"
+                  className="w-10 h-10 border border-gray-300 dark:border-dark-border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg disabled:opacity-50"
                 >
                   +
                 </button>
               </div>
-              {stockError && <p className="text-red-600 dark:text-red-400 text-sm mt-2">{stockError}</p>}
+              {stockError && <p className="text-red-600 text-sm mt-2">{stockError}</p>}
             </div>
           )}
 
-          {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
             disabled={!isInStock}
             className={`w-full py-3 rounded-lg font-semibold transition ${
               isInStock
-                ? 'bg-primary-600 text-white hover:bg-primary-700'
+                ? 'btn-primary'
                 : 'bg-gray-300 dark:bg-dark-border text-gray-500 dark:text-gray-400 cursor-not-allowed'
             }`}
           >
@@ -4298,7 +4777,7 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Full Description Section with Markdown and Show More/Less */}
+      {/* Description */}
       <div className="mt-12 border-t pt-8">
         <h2 className="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">توضیحات محصول</h2>
         <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -4316,7 +4795,7 @@ const ProductDetail = () => {
           <div className="text-center mt-3">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="text-primary-600 dark:text-primary-400 hover:underline focus:outline-none"
+              className="text-primary-600 hover:underline focus:outline-none"
             >
               {expanded ? 'نمایش کمتر' : 'نمایش بیشتر'}
             </button>
@@ -4324,13 +4803,59 @@ const ProductDetail = () => {
         )}
       </div>
 
-      {/* Reviews Section */}
+      {/* Similar Products */}
+      {!similarLoading && similarProducts.length > 0 && (
+        <div className="mt-12 border-t pt-8">
+          <h2 className="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">محصولات مشابه</h2>
+          <div className="overflow-x-auto pb-4">
+            <div className="flex gap-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-6">
+              {similarProducts.map((similarProduct) => (
+                <Link
+                  key={similarProduct.id}
+                  to={`/products/${similarProduct.slug}`}
+                  className="block min-w-[200px] md:min-w-0 group card bg-white dark:bg-dark-surface flex-shrink-0"
+                >
+                  <div className="relative overflow-hidden h-40">
+                    <img
+                      src={similarProduct.primary_image || '/placeholder.jpg'}
+                      alt={similarProduct.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <DiscountBadge percentage={similarProduct.discount_percentage} />
+                    {!similarProduct.in_stock && (
+                      <span className="absolute top-2 left-2 bg-gray-700 text-white text-xs px-2 py-1 rounded-full">ناموجود</span>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-base text-gray-800 dark:text-white mb-1 line-clamp-1">{similarProduct.name}</h3>
+                    <div className="flex items-center gap-2 flex-wrap mt-2">
+                      <span className="text-primary-600 dark:text-primary-400 font-bold text-lg">
+                        {formatPrice(similarProduct.price)}
+                      </span>
+                      {similarProduct.compare_price && (
+                        <span className="text-gray-400 line-through text-xs">
+                          {formatPrice(similarProduct.compare_price)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {similarProduct.manufacturer_name || 'نامشخص'}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reviews */}
       <div className="mt-12 border-t pt-8">
         <ReviewList productId={product.id} />
         <ReviewForm productId={product.id} productSlug={product.slug} onSuccess={() => window.location.reload()} />
       </div>
 
-      {/* Sticky Add to Cart Bar – only on mobile */}
+      {/* Sticky Add to Cart Bar – mobile only */}
       {isInStock && (
         <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-surface border-t border-gray-200 dark:border-dark-border p-3 shadow-lg z-40 md:hidden">
           <div className="flex items-center justify-between gap-3">
@@ -4340,15 +4865,15 @@ const ProductDetail = () => {
                 <button
                   onClick={decreaseQuantity}
                   disabled={quantity <= 1}
-                  className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg disabled:opacity-50 text-gray-700 dark:text-gray-300"
+                  className="w-8 h-8 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50"
                 >
                   -
                 </button>
-                <span className="w-8 text-center text-gray-800 dark:text-white">{quantity}</span>
+                <span className="w-8 text-center">{quantity}</span>
                 <button
                   onClick={increaseQuantity}
                   disabled={quantity >= maxAllowed && maxAllowed > 0}
-                  className="w-8 h-8 border border-gray-300 dark:border-dark-border rounded hover:bg-gray-100 dark:hover:bg-dark-bg disabled:opacity-50 text-gray-700 dark:text-gray-300"
+                  className="w-8 h-8 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50"
                 >
                   +
                 </button>
@@ -4358,15 +4883,13 @@ const ProductDetail = () => {
               onClick={handleAddToCart}
               disabled={!isInStock}
               className={`flex-1 py-2 rounded-lg font-semibold transition ${
-                isInStock
-                  ? 'bg-primary-600 text-white hover:bg-primary-700'
-                  : 'bg-gray-300 dark:bg-dark-border text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                isInStock ? 'btn-primary' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
               {isInStock ? 'افزودن به سبد خرید' : 'ناموجود'}
             </button>
           </div>
-          {stockError && <p className="text-red-600 dark:text-red-400 text-xs mt-1 text-center">{stockError}</p>}
+          {stockError && <p className="text-red-600 text-xs mt-1 text-center">{stockError}</p>}
         </div>
       )}
     </div>
@@ -4378,8 +4901,8 @@ export default ProductDetail;
 
 ================================================================================
 FILE: src\pages\Products.js
-SIZE: 19,355 bytes
-MODIFIED: 2026-05-19 22:07:19.889730
+SIZE: 22,819 bytes
+MODIFIED: 2026-05-20 01:13:47.195894
 ================================================================================
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -4405,7 +4928,7 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
   
-  const { products, loading, pagination, refetch } = useProducts({
+  const { products, loading, pagination } = useProducts({
     ...filters,
     page: currentPage,
   });
@@ -4480,66 +5003,112 @@ const Products = () => {
     { value: 'true', label: 'فقط موجود' },
     { value: 'false', label: 'فقط ناموجود' },
   ];
+
+  const hasActiveFilters = () => {
+    return (
+      filters.search !== '' ||
+      filters.min_price !== '' ||
+      filters.max_price !== '' ||
+      filters.category !== '' ||
+      filters.product_type !== '' ||
+      filters.in_stock !== ''
+    );
+  };
   
   return (
-    <div className="products-page container mx-auto px-4 py-8" dir="rtl">
-      <div className="flex flex-col gap-8">
-        {/* Top bar with toggle button and sort */}
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
+    <div className="products-page container mx-auto px-4 py-6" dir="rtl">
+      <div className="flex flex-col gap-6">
+        {/* Top bar */}
+        <div className="flex flex-wrap justify-between items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => setFiltersOpen(!filtersOpen)}
-              className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg shadow-md transition"
+              className="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-3 py-1.5 rounded-lg shadow-soft transition text-sm"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
               {filtersOpen ? 'بستن فیلترها' : 'نمایش فیلترها'}
             </button>
-            <label className="font-semibold text-gray-700 dark:text-gray-300">مرتب‌سازی:</label>
+            
+            {hasActiveFilters() && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg shadow-soft transition text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                حذف فیلترها
+              </button>
+            )}
+            
+            <label className="font-semibold text-gray-700 dark:text-gray-300 text-sm">مرتب‌سازی:</label>
             <select
               name="ordering"
               value={filters.ordering}
               onChange={handleFilterChange}
-              className="border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+              className="border border-gray-200 dark:border-dark-border rounded-lg p-1.5 text-sm bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-300"
             >
               {sortOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </div>
-          <div className="text-gray-600 dark:text-gray-400">
+          <div className="text-gray-600 dark:text-gray-400 text-sm">
             {!loading && pagination?.count !== undefined && (
               <span>{pagination.count} محصول یافت شد</span>
             )}
           </div>
         </div>
 
-        {/* Main content area: sidebar + product grid */}
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Desktop sidebar (normal column, togglable) */}
+        {/* Main content */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Desktop sidebar - modern design */}
           {filtersOpen && (
             <aside className="hidden lg:block lg:w-1/4">
-              <div className="bg-gray-50 dark:bg-dark-surface p-4 rounded-xl sticky top-20 border border-gray-200 dark:border-dark-border shadow-sm">
-                <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">فیلترها</h3>
-                <div className="mb-4">
-                  <label className="block mb-2 text-gray-700 dark:text-gray-300">جستجو</label>
-                  <input
-                    type="text"
-                    name="search"
-                    value={filters.search}
-                    onChange={handleFilterChange}
-                    placeholder="نام محصول..."
-                    className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  />
+              <div className="bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border shadow-soft p-5 sticky top-20">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="font-bold text-lg text-gray-900 dark:text-white">فیلترها</h3>
+                  {hasActiveFilters() && (
+                    <button
+                      onClick={clearFilters}
+                      className="text-xs text-primary-600 hover:text-primary-700 flex items-center gap-1 transition"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      پاک کردن همه
+                    </button>
+                  )}
                 </div>
-                <div className="mb-4">
-                  <label className="block mb-2 text-gray-700 dark:text-gray-300">دسته‌بندی</label>
+
+                {/* Search */}
+                <div className="mb-5">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">جستجو</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      value={filters.search}
+                      onChange={handleFilterChange}
+                      placeholder="نام محصول..."
+                      className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 pr-3 pl-8 bg-white dark:bg-dark-bg text-sm focus:ring-2 focus:ring-primary-400 focus:border-transparent transition"
+                    />
+                    <svg className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Category */}
+                <div className="mb-5">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">دسته‌بندی</label>
                   <select
                     name="category"
                     value={filters.category}
                     onChange={handleFilterChange}
-                    className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                    className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 bg-white dark:bg-dark-bg text-sm focus:ring-2 focus:ring-primary-400 focus:border-transparent"
                     disabled={categoriesLoading}
                   >
                     <option value="">همه دسته‌ها</option>
@@ -4548,29 +5117,33 @@ const Products = () => {
                     ))}
                   </select>
                 </div>
-                <div className="mb-4">
-                  <label className="block mb-2 text-gray-700 dark:text-gray-300">نوع محصول</label>
+
+                {/* Product Type */}
+                <div className="mb-5">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">نوع محصول</label>
                   <select
                     name="product_type"
                     value={filters.product_type}
                     onChange={handleFilterChange}
-                    className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                    className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 bg-white dark:bg-dark-bg text-sm focus:ring-2 focus:ring-primary-400 focus:border-transparent"
                   >
                     {productTypeOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
                 </div>
-                <div className="mb-4">
-                  <label className="block mb-2 text-gray-700 dark:text-gray-300">بازه قیمت (تومان)</label>
-                  <div className="flex gap-2">
+
+                {/* Price Range - fixed with grid */}
+                <div className="mb-5">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">بازه قیمت (تومان)</label>
+                  <div className="grid grid-cols-2 gap-2">
                     <input
                       type="number"
                       name="min_price"
                       value={filters.min_price}
                       onChange={handleFilterChange}
                       placeholder="از"
-                      className="w-1/2 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                      className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-primary-400 focus:border-transparent"
                     />
                     <input
                       type="number"
@@ -4578,26 +5151,30 @@ const Products = () => {
                       value={filters.max_price}
                       onChange={handleFilterChange}
                       placeholder="تا"
-                      className="w-1/2 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                      className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-primary-400 focus:border-transparent"
                     />
                   </div>
                 </div>
-                <div className="mb-4">
-                  <label className="block mb-2 text-gray-700 dark:text-gray-300">موجودی</label>
+
+                {/* Stock */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">موجودی</label>
                   <select
                     name="in_stock"
                     value={filters.in_stock}
                     onChange={handleFilterChange}
-                    className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                    className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 bg-white dark:bg-dark-bg text-sm focus:ring-2 focus:ring-primary-400 focus:border-transparent"
                   >
                     {stockOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
                 </div>
+
+                {/* Clear button (bottom) */}
                 <button
                   onClick={clearFilters}
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition"
+                  className="w-full bg-gray-100 dark:bg-dark-bg hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium transition"
                 >
                   حذف همه فیلترها
                 </button>
@@ -4605,34 +5182,43 @@ const Products = () => {
             </aside>
           )}
           
-          {/* Mobile full-screen drawer */}
+          {/* Mobile drawer - modern sliding panel */}
           {filtersOpen && (
             <div className="fixed inset-0 z-50 lg:hidden">
-              <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setFiltersOpen(false)}></div>
-              <div className="absolute inset-y-0 right-0 w-full max-w-full bg-white dark:bg-dark-surface shadow-xl overflow-y-auto">
-                <div className="p-4">
-                  <div className="flex justify-between items-center mb-4">
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setFiltersOpen(false)}></div>
+              <div className="absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-dark-surface shadow-xl overflow-y-auto">
+                <div className="p-5">
+                  <div className="flex justify-between items-center mb-5">
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white">فیلترها</h3>
-                    <button onClick={() => setFiltersOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">✕</button>
+                    <button onClick={() => setFiltersOpen(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
                   </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300">جستجو</label>
-                    <input
-                      type="text"
-                      name="search"
-                      value={filters.search}
-                      onChange={handleFilterChange}
-                      placeholder="نام محصول..."
-                      className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    />
+
+                  {/* Search */}
+                  <div className="mb-5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">جستجو</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="search"
+                        value={filters.search}
+                        onChange={handleFilterChange}
+                        placeholder="نام محصول..."
+                        className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 pr-3 pl-8 bg-white dark:bg-dark-bg text-sm"
+                      />
+                      <svg className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
                   </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300">دسته‌بندی</label>
+
+                  {/* Category */}
+                  <div className="mb-5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">دسته‌بندی</label>
                     <select
                       name="category"
                       value={filters.category}
                       onChange={handleFilterChange}
-                      className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                      className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 bg-white dark:bg-dark-bg text-sm"
                       disabled={categoriesLoading}
                     >
                       <option value="">همه دسته‌ها</option>
@@ -4641,29 +5227,33 @@ const Products = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300">نوع محصول</label>
+
+                  {/* Product Type */}
+                  <div className="mb-5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">نوع محصول</label>
                     <select
                       name="product_type"
                       value={filters.product_type}
                       onChange={handleFilterChange}
-                      className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                      className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 bg-white dark:bg-dark-bg text-sm"
                     >
                       {productTypeOptions.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
                   </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300">بازه قیمت (تومان)</label>
-                    <div className="flex gap-2">
+
+                  {/* Price Range - fixed with grid */}
+                  <div className="mb-5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">بازه قیمت (تومان)</label>
+                    <div className="grid grid-cols-2 gap-2">
                       <input
                         type="number"
                         name="min_price"
                         value={filters.min_price}
                         onChange={handleFilterChange}
                         placeholder="از"
-                        className="w-1/2 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                        className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 text-sm"
                       />
                       <input
                         type="number"
@@ -4671,26 +5261,30 @@ const Products = () => {
                         value={filters.max_price}
                         onChange={handleFilterChange}
                         placeholder="تا"
-                        className="w-1/2 border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                        className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 text-sm"
                       />
                     </div>
                   </div>
-                  <div className="mb-4">
-                    <label className="block mb-2 text-gray-700 dark:text-gray-300">موجودی</label>
+
+                  {/* Stock */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">موجودی</label>
                     <select
                       name="in_stock"
                       value={filters.in_stock}
                       onChange={handleFilterChange}
-                      className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                      className="w-full border border-gray-200 dark:border-dark-border rounded-lg py-2 px-3 bg-white dark:bg-dark-bg text-sm"
                     >
                       {stockOptions.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
                   </div>
+
+                  {/* Clear button */}
                   <button
                     onClick={clearFilters}
-                    className="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition"
+                    className="w-full bg-gray-100 dark:bg-dark-bg hover:bg-gray-200 dark:hover:bg-dark-border text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium transition"
                   >
                     حذف همه فیلترها
                   </button>
@@ -4699,50 +5293,52 @@ const Products = () => {
             </div>
           )}
           
-          {/* Product grid - takes full width when filters closed, or remaining width when open on desktop */}
+          {/* Product grid */}
           <main className={`${filtersOpen ? 'lg:w-3/4' : 'w-full'}`}>
             {loading && (
               <div className="flex justify-center py-12">
-                <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-500 rounded-full animate-spin"></div>
               </div>
             )}
             
             {!loading && products?.length === 0 && (
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-12 text-gray-500 dark:text-gray-400 text-sm">
                 هیچ محصولی با این فیلترها یافت نشد.
               </div>
             )}
             
             {!loading && products?.length > 0 && (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {sortedProducts.map((product) => (
-                    <div key={product.id} className="group bg-white dark:bg-dark-surface rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-dark-border">
+                    <div key={product.id} className="group card bg-white dark:bg-dark-surface">
                       <Link to={`/products/${product.slug}`}>
-                        <div className="relative overflow-hidden h-48">
-                          <img
-                            src={product.primary_image || '/placeholder.jpg'}
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <DiscountBadge percentage={product.discount_percentage} />
-                          {!product.in_stock && (
-                            <span className="absolute top-2 left-2 bg-gray-700 text-white text-xs px-2 py-1 rounded-full">ناموجود</span>
-                          )}
+                        <div className="flex justify-center pt-5">
+                          <div className="relative w-44 h-44 overflow-hidden rounded-lg">
+                            <img
+                              src={product.primary_image || '/placeholder.jpg'}
+                              alt={product.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <DiscountBadge percentage={product.discount_percentage} size="small" />
+                            {!product.in_stock && (
+                              <span className="absolute top-1 left-1 bg-gray-700 text-white text-xs px-1.5 py-0.5 rounded-full">ناموجود</span>
+                            )}
+                          </div>
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2 line-clamp-1">{product.name}</h3>
-                          <div className="flex items-center gap-2 flex-wrap mt-2">
-                            <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">
+                        <div className="p-3 text-center">
+                          <h3 className="font-semibold text-sm text-gray-800 dark:text-white mb-1 line-clamp-2">{product.name}</h3>
+                          <div className="flex items-center justify-center gap-2 flex-wrap mt-1">
+                            <span className="text-primary-600 dark:text-primary-400 font-bold text-base">
                               {formatPrice(product.price)}
                             </span>
                             {product.compare_price && (
-                              <span className="text-gray-400 line-through text-sm">
+                              <span className="text-gray-400 line-through text-xs">
                                 {formatPrice(product.compare_price)}
                               </span>
                             )}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {product.manufacturer_name || 'نامشخص'}
                           </div>
                         </div>
@@ -4756,17 +5352,17 @@ const Products = () => {
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300"
+                      className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-dark-bg transition"
                     >
                       قبلی
                     </button>
-                    <span className="px-3 py-1 text-gray-700 dark:text-gray-300">
+                    <span className="px-3 py-1 text-gray-700 dark:text-gray-300 text-sm">
                       صفحه {currentPage} از {totalPages}
                     </span>
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="px-3 py-1 border border-gray-300 dark:border-dark-border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300"
+                      className="px-3 py-1 border border-gray-200 dark:border-dark-border rounded-md disabled:opacity-50 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-dark-bg transition"
                     >
                       بعدی
                     </button>
@@ -4786,8 +5382,8 @@ export default Products;
 
 ================================================================================
 FILE: src\pages\Profile.js
-SIZE: 8,155 bytes
-MODIFIED: 2026-05-06 01:49:21.401967
+SIZE: 7,411 bytes
+MODIFIED: 2026-05-20 00:56:32.056431
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -4863,13 +5459,13 @@ const Profile = () => {
     <div className="profile-page container mx-auto px-4 py-8" dir="rtl">
       <div className="max-w-2xl mx-auto">
         {/* User Profile Card */}
-        <div className="bg-white dark:bg-dark-surface rounded-xl shadow-lg p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">پروفایل کاربری</h1>
             {!editing && (
               <button
                 onClick={() => setEditing(true)}
-                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
+                className="btn-primary !py-2 !px-4 text-sm"
               >
                 ویرایش پروفایل
               </button>
@@ -4897,7 +5493,7 @@ const Profile = () => {
                   name="first_name"
                   value={formData.first_name || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  className="input-field"
                 />
               </div>
 
@@ -4908,7 +5504,7 @@ const Profile = () => {
                   name="last_name"
                   value={formData.last_name || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
 
@@ -4919,7 +5515,7 @@ const Profile = () => {
                   name="email"
                   value={formData.email || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
 
@@ -4930,7 +5526,7 @@ const Profile = () => {
                   name="phone_number"
                   value={formData.phone_number || ''}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
 
@@ -4938,14 +5534,14 @@ const Profile = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition"
+                  className="btn-primary disabled:opacity-50"
                 >
                   {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                  className="btn-secondary"
                 >
                   انصراف
                 </button>
@@ -4973,7 +5569,7 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Address Manager Section – already dark mode ready */}
+        {/* Address Manager Section – already updated separately */}
         <div className="mt-6">
           <AddressManager />
         </div>
@@ -4997,8 +5593,8 @@ export default Profile;
 
 ================================================================================
 FILE: src\pages\Register.js
-SIZE: 7,286 bytes
-MODIFIED: 2026-05-06 02:02:46.299302
+SIZE: 6,296 bytes
+MODIFIED: 2026-05-20 01:20:08.098281
 ================================================================================
 
 import React, { useState } from 'react';
@@ -5070,7 +5666,7 @@ const Register = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">ثبت نام</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">عضو جدید داروخانه دکتر نقی پور شوید</p>
@@ -5091,7 +5687,7 @@ const Register = () => {
                 value={formData.username}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                className="input-field"
               />
             </div>
 
@@ -5103,7 +5699,7 @@ const Register = () => {
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
               <div>
@@ -5113,7 +5709,7 @@ const Register = () => {
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
             </div>
@@ -5126,7 +5722,7 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
@@ -5137,7 +5733,7 @@ const Register = () => {
                 name="phone_number"
                 value={formData.phone_number}
                 onChange={handleChange}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
@@ -5149,7 +5745,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
@@ -5161,14 +5757,14 @@ const Register = () => {
                 value={formData.password_confirm}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 shadow-md"
+              className="btn-primary w-full disabled:opacity-50"
             >
               {loading ? 'در حال ثبت نام...' : 'ثبت نام'}
             </button>
@@ -5193,8 +5789,8 @@ export default Register;
 
 ================================================================================
 FILE: src\pages\ResetPassword.js
-SIZE: 4,598 bytes
-MODIFIED: 2026-05-08 19:37:39.535724
+SIZE: 4,075 bytes
+MODIFIED: 2026-05-20 01:01:59.441545
 ================================================================================
 
 import React, { useState, useEffect } from 'react';
@@ -5242,7 +5838,7 @@ const ResetPassword = () => {
   if (error && !success) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 text-center">
+        <div className="card p-8 text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">خطا</h1>
           <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
           <Link to="/forgot-password" className="text-primary-600 hover:underline">درخواست مجدد بازیابی</Link>
@@ -5254,7 +5850,7 @@ const ResetPassword = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center container mx-auto px-4 py-12" dir="rtl">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-dark-border">
+        <div className="card p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">تعیین رمز عبور جدید</h1>
           </div>
@@ -5277,7 +5873,7 @@ const ResetPassword = () => {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                className="input-field"
                 required
               />
             </div>
@@ -5287,7 +5883,7 @@ const ResetPassword = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-xl p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                className="input-field"
                 required
               />
             </div>
@@ -5295,7 +5891,7 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50 shadow-md"
+              className="btn-primary w-full disabled:opacity-50"
             >
               {loading ? 'در حال بازنشانی...' : 'بازنشانی رمز عبور'}
             </button>
@@ -5975,8 +6571,8 @@ MODIFIED: 2025-08-14 18:01:42.981816
 
 ================================================================================
 FILE: src\index.css
-SIZE: 1,521 bytes
-MODIFIED: 2026-05-19 21:37:14.832381
+SIZE: 3,454 bytes
+MODIFIED: 2026-05-20 00:44:36.413330
 ================================================================================
 
 @tailwind base;
@@ -5985,18 +6581,23 @@ MODIFIED: 2026-05-19 21:37:14.832381
 
 @layer base {
   body {
-    @apply bg-white text-gray-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-200;
-  font-family: 'Vazirmatn', 'Segoe UI', 'Roboto', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    @apply bg-cream text-gray-900 dark:bg-dark-bg dark:text-dark-text transition-colors duration-200;
+    font-family: 'Vazirmatn', 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
+  /* Focus ring uses new primary color */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-cream dark:ring-offset-dark-bg;
   }
 }
+
 * {
   font-family: inherit;
 }
 
-/* Custom scrollbar (optional) */
+/* Custom scrollbar (preserved from original) */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -6007,7 +6608,7 @@ MODIFIED: 2026-05-19 21:37:14.832381
   @apply bg-primary-400 rounded-full;
 }
 
-/* Markdown table styling */
+/* Markdown table styling (preserved from original) */
 .prose table {
   width: 100%;
   border-collapse: collapse;
@@ -6061,6 +6662,58 @@ MODIFIED: 2026-05-19 21:37:14.832381
 }
 .dark .prose blockquote {
   color: #9ca3af;
+}
+
+/* ===== NEW MODERN CLINICAL MINIMALISM STYLES ===== */
+
+@layer components {
+  /* Elegant card – used for product cards, blog cards, etc. */
+  .card {
+    @apply bg-white dark:bg-dark-surface rounded-xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-hover transition-all duration-300;
+  }
+
+  /* Primary button – deep teal */
+  .btn-primary {
+    @apply bg-primary-500 text-white px-6 py-3 rounded-full font-medium shadow-sm hover:bg-primary-600 hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5;
+  }
+
+  /* Secondary button – white with teal border */
+  .btn-secondary {
+    @apply bg-white text-primary-600 border border-primary-200 px-6 py-3 rounded-full font-medium shadow-sm hover:bg-gray-50 hover:border-primary-300 transition-all duration-200;
+  }
+
+  /* Outline button – subtle border */
+  .btn-outline {
+    @apply border border-gray-300 bg-transparent px-6 py-3 rounded-full font-medium text-gray-700 hover:border-primary-400 hover:text-primary-600 transition-all;
+  }
+
+  /* Form inputs */
+  .input-field {
+    @apply w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-white/80 focus:bg-white focus:border-primary-300 focus:ring-2 focus:ring-primary-100 transition-all dark:bg-dark-bg dark:border-dark-border;
+  }
+
+  /* Small badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+}
+
+@layer utilities {
+  /* Smooth fade-in animation for dropdowns, modals */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
   📦 package.json
 
@@ -6124,10 +6777,10 @@ MODIFIED: 2026-05-19 00:38:50.240646
 ================================================================================
 📊 PROJECT SUMMARY
 ================================================================================
-Total files bundled: 51
-Total size: 215,982 bytes
+Total files bundled: 53
+Total size: 237,221 bytes
 
-⚛️  REACT COMPONENTS (64):
+⚛️  REACT COMPONENTS (68):
   • AddressManager
   • App
   • AuthProvider
@@ -6148,9 +6801,9 @@ Total size: 215,982 bytes
   • Profile
   • RatingStars
   • Register
-  ... and 44 more
+  ... and 48 more
 
-🧭 ROUTES (15):
+🧭 ROUTES (16):
   • /
   • /blog
   • /blog/:slug
@@ -6167,7 +6820,9 @@ Total size: 215,982 bytes
   • /register
   • /reset-password/:uid/:token
 
-🌐 API ENDPOINTS (2):
+🌐 API ENDPOINTS (4):
+  • /accounts/auth/request-otp/
+  • /accounts/auth/verify-otp/
   • /blog/posts/
   • /products/reviews/
 
@@ -6192,7 +6847,7 @@ Total size: 215,982 bytes
       ReviewComments.js
       ReviewForm.js
       ReviewList.js
-  ... and 31 more files
+  ... and 33 more files
 
-🕒 Bundle created: 2026-05-19 22:07:53
+🕒 Bundle created: 2026-05-20 23:36:14
 ================================================================================

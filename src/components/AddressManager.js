@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AddressService from '../api/AddressService';
 
-// List of Iran provinces
 const IRAN_PROVINCES = [
   'آذربایجان شرقی', 'آذربایجان غربی', 'اردبیل', 'اصفهان', 'البرز', 'ایلام',
   'بوشهر', 'تهران', 'چهارمحال و بختیاری', 'خراسان جنوبی', 'خراسان رضوی',
@@ -149,7 +148,7 @@ const AddressManager = () => {
         {!showForm && (
           <button
             onClick={() => { resetForm(); setShowForm(true); }}
-            className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
+            className="btn-primary !py-2 !px-4 text-sm"
           >
             + افزودن آدرس جدید
           </button>
@@ -167,9 +166,8 @@ const AddressManager = () => {
         </div>
       )}
 
-      {/* Address Form */}
       {showForm && (
-        <div className="bg-gray-50 dark:bg-dark-surface rounded-xl p-6 mb-6 border border-gray-200 dark:border-dark-border">
+        <div className="card p-6 mb-6">
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
             {editingId ? 'ویرایش آدرس' : 'آدرس جدید'}
           </h3>
@@ -182,7 +180,7 @@ const AddressManager = () => {
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+                  className="input-field"
                   required
                 />
               </div>
@@ -193,7 +191,7 @@ const AddressManager = () => {
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 />
               </div>
@@ -205,7 +203,7 @@ const AddressManager = () => {
                 name="address_line_1"
                 value={formData.address_line_1}
                 onChange={handleChange}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
                 required
               />
             </div>
@@ -216,7 +214,7 @@ const AddressManager = () => {
                 name="address_line_2"
                 value={formData.address_line_2}
                 onChange={handleChange}
-                className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                className="input-field"
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,7 +224,7 @@ const AddressManager = () => {
                   name="state_province"
                   value={formData.state_province}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 >
                   <option value="">انتخاب استان</option>
@@ -242,7 +240,7 @@ const AddressManager = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 />
               </div>
@@ -255,7 +253,7 @@ const AddressManager = () => {
                   name="postal_code"
                   value={formData.postal_code}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                   required
                 />
               </div>
@@ -266,7 +264,7 @@ const AddressManager = () => {
                   name="phone_number"
                   value={formData.phone_number}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 bg-white dark:bg-dark-bg text-gray-900 dark:text-white"
+                  className="input-field"
                 />
               </div>
             </div>
@@ -277,7 +275,7 @@ const AddressManager = () => {
                   name="is_default"
                   checked={formData.is_default}
                   onChange={handleChange}
-                  className="w-4 h-4"
+                  className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400"
                 />
                 <span>آدرس پیش‌فرض باشد</span>
               </label>
@@ -285,14 +283,14 @@ const AddressManager = () => {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                className="btn-primary"
               >
                 {editingId ? 'به‌روزرسانی' : 'ذخیره'}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowForm(false); resetForm(); }}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                className="btn-secondary"
               >
                 انصراف
               </button>
@@ -301,13 +299,12 @@ const AddressManager = () => {
         </div>
       )}
 
-      {/* Address List */}
       {addresses.length === 0 && !showForm ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-8">هیچ آدرسی ثبت نشده است</div>
       ) : (
         <div className="space-y-4">
           {addresses.map(address => (
-            <div key={address.id} className="border border-gray-200 dark:border-dark-border rounded-xl p-4 bg-white dark:bg-dark-surface">
+            <div key={address.id} className="card p-4">
               <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div className="flex-1">
                   <div className="font-semibold text-lg text-gray-900 dark:text-white">
@@ -319,7 +316,7 @@ const AddressManager = () => {
                   <div className="text-gray-600 dark:text-gray-400">کد پستی: {address.postal_code}</div>
                   {address.phone_number && <div className="text-gray-600 dark:text-gray-400">تلفن: {address.phone_number}</div>}
                   {address.is_default && (
-                    <span className="inline-block mt-2 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 text-xs px-2 py-1 rounded-full">
+                    <span className="inline-block mt-2 bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-xs px-2 py-1 rounded-full">
                       پیش‌فرض
                     </span>
                   )}
@@ -328,20 +325,20 @@ const AddressManager = () => {
                   {!address.is_default && (
                     <button
                       onClick={() => handleSetDefault(address.id)}
-                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm"
+                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 text-sm transition"
                     >
                       تنظیم به عنوان پیش‌فرض
                     </button>
                   )}
                   <button
                     onClick={() => handleEdit(address)}
-                    className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm"
+                    className="text-primary-600 dark:text-primary-400 hover:text-primary-700 text-sm transition"
                   >
                     ویرایش
                   </button>
                   <button
                     onClick={() => handleDelete(address.id)}
-                    className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
+                    className="text-red-500 dark:text-red-400 hover:text-red-600 text-sm transition"
                   >
                     حذف
                   </button>

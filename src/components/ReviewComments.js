@@ -8,10 +8,9 @@ const ReviewComments = ({ reviewId }) => {
   const [newComment, setNewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); // optional
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    // get current user from localStorage if needed (to show edit/delete? not required)
     const user = localStorage.getItem('user');
     if (user) {
       try {
@@ -40,7 +39,7 @@ const ReviewComments = ({ reviewId }) => {
       await ReviewService.addComment(reviewId, newComment);
       setNewComment('');
       setShowForm(false);
-      await fetchComments(); // refresh
+      await fetchComments();
     } catch (err) {
       setError(err.message || 'خطا در ارسال نظر');
     } finally {
@@ -48,11 +47,10 @@ const ReviewComments = ({ reviewId }) => {
     }
   };
 
-  if (loading) return <div className="text-right text-xs text-gray-400 mt-2">...</div>;
+  if (loading) return <div className="text-right text-xs text-gray-400 dark:text-gray-500 mt-2">...</div>;
 
   return (
-    <div className="mt-3 pt-2 border-t border-gray-200 dark:border-dark-border">
-      {/* Comments list */}
+    <div className="mt-3 pt-2 border-t border-gray-100 dark:border-dark-border">
       <div className="space-y-2">
         {comments.map(comment => (
           <div key={comment.id} className="bg-gray-50 dark:bg-dark-surface p-3 rounded-lg">
@@ -62,12 +60,12 @@ const ReviewComments = ({ reviewId }) => {
                   {comment.user_display_name}
                 </span>
                 {comment.is_staff_response && (
-                  <span className="mr-2 text-xs bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full">
+                  <span className="mr-2 text-xs bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full">
                     پاسخ کارشناس
                   </span>
                 )}
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 dark:text-gray-400">
                 {new Date(comment.created_at).toLocaleDateString('fa-IR')}
               </span>
             </div>
@@ -76,11 +74,10 @@ const ReviewComments = ({ reviewId }) => {
         ))}
       </div>
 
-      {/* Reply button / form */}
       {!showForm ? (
         <button
           onClick={() => setShowForm(true)}
-          className="text-primary-600 dark:text-primary-400 text-xs mt-2 hover:underline focus:outline-none"
+          className="text-primary-600 dark:text-primary-400 text-xs mt-2 hover:underline focus:outline-none transition"
         >
           + پاسخ
         </button>
@@ -91,20 +88,20 @@ const ReviewComments = ({ reviewId }) => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="نظر خود را بنویسید..."
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-2 text-sm bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+            className="input-field text-sm"
           />
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={submitting}
-              className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1 rounded-md text-sm transition disabled:opacity-50"
+              className="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 rounded-md text-sm transition disabled:opacity-50"
             >
               {submitting ? 'در حال ارسال...' : 'ارسال'}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded-md text-sm transition"
+              className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1 rounded-md text-sm transition"
             >
               انصراف
             </button>

@@ -4,28 +4,39 @@ import AuthService from '../services/AuthService';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const getUserFromStorage = () => {
+    const storedUser = localStorage.getItem('user');
+    if (!storedUser || storedUser === 'undefined') return null;
+    try {
+      return JSON.parse(storedUser);
+    } catch { return null; }
+  };
 
+  const [user, setUser] = useState(getUserFromStorage());
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!getUserFromStorage());
+
+  // Listen to storage events (for manual reloads from other tabs)
   useEffect(() => {
-    initializeAuth();
+    const handleStorageChange = () => {
+      const storedUser = getUserFromStorage();
+      setUser(storedUser);
+      setIsAuthenticated(!!storedUser);
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const initializeAuth = async () => {
-    try {
-      if (AuthService.isAuthenticated()) {
-        const userData = await AuthService.getCurrentUser();
-        setUser(userData);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error('Auth initialization error:', error);
-      AuthService.logout();
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Listen to custom 'userLoggedIn' event (for same‑tab login)
+  useEffect(() => {
+    const handleCustomLogin = () => {
+      const storedUser = getUserFromStorage();
+      setUser(storedUser);
+      setIsAuthenticated(!!storedUser);
+    };
+    window.addEventListener('userLoggedIn', handleCustomLogin);
+    return () => window.removeEventListener('userLoggedIn', handleCustomLogin);
+  }, []);
 
   const login = async (credentials) => {
     try {
@@ -41,10 +52,15 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await AuthService.logout();
-      setUser(null);
-      setIsAuthenticated(false);
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+      window.dispatchEvent(new Event('userLoggedOut')); // optional
     }
   };
 
@@ -57,6 +73,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshUser = () => {
+    const storedUser = getUserFromStorage();
+    setUser(storedUser);
+    setIsAuthenticated(!!storedUser);
+  };
+
   const value = {
     user,
     loading,
@@ -64,6 +86,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     register,
+    refreshUser,
   };
 
   return (

@@ -70,7 +70,7 @@ const Register = () => {
         <div className="card p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">ثبت نام</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">عضو جدید داروخانه آنلاین شوید</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">عضو جدید داروخانه دکتر نقی پور شوید</p>
           </div>
 
           {error && (

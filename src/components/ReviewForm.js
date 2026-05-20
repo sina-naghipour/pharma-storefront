@@ -32,10 +32,8 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
       if (onSuccess) onSuccess();
       setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
-      // Extract error message from backend response
       let errorMessage = 'خطا در ثبت نظر';
       if (err.data) {
-        // Check for non_field_errors first
         if (err.data.non_field_errors && err.data.non_field_errors.length) {
           errorMessage = err.data.non_field_errors.join('\n');
         } else if (err.data.product) {
@@ -59,8 +57,8 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
   };
 
   return (
-    <div className="mt-8 border-t pt-6">
-      <h3 className="text-xl font-semibold mb-4">ثبت نظر جدید</h3>
+    <div className="mt-8 border-t border-gray-200 dark:border-dark-border pt-6">
+      <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">ثبت نظر جدید</h3>
       {error && (
         <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-3 rounded-lg mb-4 whitespace-pre-wrap">
           {error}
@@ -82,7 +80,7 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
             placeholder="عنوان نظر"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="input-field"
             required
           />
         </div>
@@ -92,7 +90,7 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
             placeholder="متن نظر خود را بنویسید..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full border border-gray-300 dark:border-dark-border rounded-lg p-3 bg-white dark:bg-dark-bg text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="input-field"
             required
           />
         </div>
@@ -100,7 +98,7 @@ const ReviewForm = ({ productId, productSlug, onSuccess }) => {
           <button
             type="submit"
             disabled={submitting}
-            className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 disabled:opacity-50 transition"
+            className="btn-primary disabled:opacity-50"
           >
             {submitting ? 'در حال ثبت...' : 'ثبت نظر'}
           </button>

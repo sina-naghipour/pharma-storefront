@@ -22,6 +22,7 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import ScrollToTop from './components/ScrollToTop';
+import SMSLogin from './components/SMSLogin';
 
 
 import './App.css';
@@ -52,6 +53,7 @@ function App() {
                   <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
                   <Route path="/blog" element={<BlogList />} />
                   <Route path="/blog/:slug" element={<BlogDetail />} />
+                  <Route path="/sms-login" element={<SMSLogin />} />
                 </Routes>
               </main>
               <Footer />

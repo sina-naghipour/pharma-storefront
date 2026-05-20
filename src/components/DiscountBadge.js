@@ -10,7 +10,7 @@ const DiscountBadge = ({ percentage, size = 'default' }) => {
   };
   
   return (
-    <span className={`absolute top-2 right-2 bg-red-500 text-white font-bold rounded-full z-10 ${sizeClasses[size]}`}>
+    <span className={`absolute top-2 right-2 bg-coral-500 text-white font-bold rounded-full z-10 ${sizeClasses[size]}`}>
       {percentage}% تخفیف
     </span>
   );

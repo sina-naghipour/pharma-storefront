@@ -85,7 +85,7 @@ const Header = () => {
         <div className="container mx-auto px-4 py-4 md:py-5">
           <div className="flex justify-between items-center gap-4">
             <Link to="/" className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400 shrink-0">
-              داروخانه آنلاین
+              داروخانه دکتر نقی پور
             </Link>
 
             {/* Desktop Search Bar */}
@@ -158,7 +158,7 @@ const Header = () => {
                       onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                       className="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-primary-600"
                     >
-                      <span>{user?.first_name || user?.username || 'حساب کاربری'}</span>
+                      <span>حساب کاربری</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>

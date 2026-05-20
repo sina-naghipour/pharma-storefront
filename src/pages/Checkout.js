@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import AddressService from '../api/AddressService';
 import OrderService from '../api/OrderService';
 import { formatPrice } from '../utils/format';
-import { Link } from 'react-router-dom';
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { cart, loading: cartLoading, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
@@ -21,9 +21,27 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [notes, setNotes] = useState('');
 
+  // Check if profile is complete (name and real email)
+  const isProfileComplete = () => {
+    if (!user) return false;
+    const hasName = user.first_name && user.first_name.trim() !== '' && user.last_name && user.last_name.trim() !== '';
+    const hasRealEmail = user.email && user.email.trim() !== '';
+    return hasName && hasRealEmail;
+  };
+
   useEffect(() => {
+    // Redirect to profile if not complete
+    if (isAuthenticated && !isProfileComplete()) {
+      navigate('/profile', { 
+        state: { 
+          message: 'لطفا ابتدا اطلاعات پروفایل خود را کامل کنید.',
+          returnTo: '/checkout'
+        } 
+      });
+      return;
+    }
     fetchAddresses();
-  }, []);
+  }, [isAuthenticated, user]);
 
   const fetchAddresses = async () => {
     try {
@@ -62,9 +80,7 @@ const Checkout = () => {
         notes: notes,
       };
       const order = await OrderService.createOrder(orderData);
-      // Clear cart after successful order creation
       await clearCart();
-      // Redirect to payment page or order confirmation
       navigate(`/orders/${order.id}`);
     } catch (err) {
       setError(err.message || 'خطا در ثبت سفارش');
@@ -95,10 +111,8 @@ const Checkout = () => {
       <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">تکمیل خرید</h1>
       
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Checkout Form */}
         <div className="lg:w-2/3">
           <form onSubmit={handleSubmit}>
-            {/* Address Selection */}
             <div className="card p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">آدرس تحویل</h2>
               {addresses.length === 0 ? (
@@ -140,7 +154,6 @@ const Checkout = () => {
               )}
             </div>
 
-            {/* Payment Method */}
             <div className="card p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">روش پرداخت</h2>
               <div className="space-y-3">
@@ -173,7 +186,6 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* Order Notes */}
             <div className="card p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">یادداشت سفارش (اختیاری)</h2>
               <textarea
@@ -201,7 +213,6 @@ const Checkout = () => {
           </form>
         </div>
 
-        {/* Order Summary */}
         <div className="lg:w-1/3">
           <div className="card p-6 sticky top-20">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">خلاصه سفارش</h2>
